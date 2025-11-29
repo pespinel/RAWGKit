@@ -29,13 +29,24 @@ jobs:
       - name: Generate release notes from CHANGELOG
         id: release_notes
         run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+
           if [ -f CHANGELOG.md ]; then
-            sed -n "/## \[${{ steps.get_version.outputs.VERSION }}\]/,/## \[/p" CHANGELOG.md | head -n -1 > RELEASE_NOTES.md
-            if [ ! -s RELEASE_NOTES.md ]; then
-              echo "Release ${{ steps.get_version.outputs.VERSION }}" > RELEASE_NOTES.md
+            # Try to grab the section for this version up to the next "## ["
+            CONTENT=$(sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | sed '1d;$d' || true)
+
+            # If it is the last section (no following "## ["), read until EOF
+            if [ -z "$CONTENT" ]; then
+              CONTENT=$(sed -n "/## \[$VERSION\]/,\$p" CHANGELOG.md | sed '1d' || true)
+            fi
+
+            if [ -n "$CONTENT" ]; then
+              printf "%s\n" "$CONTENT" > RELEASE_NOTES.md
+            else
+              echo "Release $VERSION" > RELEASE_NOTES.md
             fi
           else
-            echo "Release ${{ steps.get_version.outputs.VERSION }}" > RELEASE_NOTES.md
+            echo "Release $VERSION" > RELEASE_NOTES.md
           fi
 
       - name: Create GitHub Release
