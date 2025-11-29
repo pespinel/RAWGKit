@@ -5,6 +5,9 @@ on:
     tags:
       - "v*.*.*"
 
+permissions:
+  contents: write
+
 jobs:
   create-release:
     name: Create Release
@@ -55,3 +58,5 @@ jobs:
           body_path: RELEASE_NOTES.md
           draft: false
           generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
