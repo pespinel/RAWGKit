@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "5.9"
+
+      - name: Build release
+        run: swift build -c release
+
+      - name: Run tests
+        run: swift test
+
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes from CHANGELOG
+        id: release_notes
+        run: |
+          if [ -f CHANGELOG.md ]; then
+            sed -n "/## \[${{ steps.get_version.outputs.VERSION }}\]/,/## \[/p" CHANGELOG.md | head -n -1 > RELEASE_NOTES.md
+            if [ ! -s RELEASE_NOTES.md ]; then
+              echo "Release ${{ steps.get_version.outputs.VERSION }}" > RELEASE_NOTES.md
+            fi
+          else
+            echo "Release ${{ steps.get_version.outputs.VERSION }}" > RELEASE_NOTES.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE_NOTES.md
+          draft: false
+          generate_release_notes: true
