@@ -4,6 +4,7 @@
 # Swift Package Manager
 /.build
 /Packages
+Package.resolved
 .swiftpm/
 xcuserdata/
 DerivedData/

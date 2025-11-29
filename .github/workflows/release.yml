@@ -8,18 +8,13 @@ on:
 jobs:
   create-release:
     name: Create Release
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "5.9"
 
       - name: Build release
         run: swift build -c release

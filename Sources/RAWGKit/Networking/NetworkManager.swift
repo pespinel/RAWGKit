@@ -50,8 +50,7 @@ actor NetworkManager {
                 print("❌ RAWGKit Decoding error: \(error)")
                 if
                     let json = try? JSONSerialization.jsonObject(with: data),
-                    let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
-                {
+                    let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
                     let prettyString = String(data: prettyData, encoding: .utf8)
                     print("📄 Response JSON:\n\(prettyString ?? "")")
                 }
