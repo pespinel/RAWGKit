@@ -1,0 +1,23 @@
+# SwiftFormat Configuration for RAWGKit
+
+# File options
+--exclude .build,.swiftpm,Package.swift,Examples.swift
+
+# Format options
+--indent 4
+--indentcase false
+--trimwhitespace always
+--allman false
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes prev-line
+--maxwidth 120
+--wrapternary before-operators
+
+# Rules
+--disable redundantSelf
+--swiftversion 5.9
