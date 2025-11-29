@@ -1,0 +1,50 @@
+# macOS
+.DS_Store
+
+# Swift Package Manager
+/.build
+/Packages
+.swiftpm/
+xcuserdata/
+DerivedData/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+
+# GitHub Instructions (internal documentation)
+.github/instructions/
+
+# Examples file (for development only)
+Examples.swift
+
+# Test coverage
+.coverage
+*.gcov
+*.gcda
+*.gcno
+coverage/
+
+# Swift documentation
+docs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# API Keys (never commit these!)
+**/APIKeys.swift
+**/Secrets.swift
+**/*apikey*.swift
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+
+# Test artifacts
+*.profraw
+*.profdata
+
