@@ -6,7 +6,7 @@
 import Foundation
 
 /// Simple in-memory cache for API responses
-actor CacheManager {
+public actor CacheManager {
     private var cache: [String: CacheEntry] = [:]
     private let defaultTTL: TimeInterval = 300 // 5 minutes
 
@@ -60,9 +60,9 @@ actor CacheManager {
         )
     }
 
-    struct CacheStats {
-        let totalEntries: Int
-        let validEntries: Int
-        let expiredEntries: Int
+    public struct CacheStats: Sendable {
+        public let totalEntries: Int
+        public let validEntries: Int
+        public let expiredEntries: Int
     }
 }

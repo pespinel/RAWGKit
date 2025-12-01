@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Public API for cache control in RAWGClient
+  - `clearCache()` - Clear all cached responses
+  - `cacheStats()` - Get cache statistics
+  - `cacheEnabled` parameter in init to enable/disable caching
+- Comprehensive test coverage for new features
+  - CacheManager tests (7 tests)
+  - RAWGResponse extensions tests (12 tests)
+  - NetworkError tests (11 tests)
+  - Total: 65 tests (was 35)
+
+### Changed
+- Made CacheManager and CacheStats public for external access
+- CacheStats now conforms to Sendable for thread-safety
 
 ## [1.1] - 2024-12-01
 

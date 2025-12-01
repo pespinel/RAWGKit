@@ -5,6 +5,9 @@
 
 import Foundation
 
+/// Cache statistics type alias
+public typealias CacheStats = CacheManager.CacheStats
+
 /// Main client for interacting with the RAWG API
 public actor RAWGClient {
     private let apiKey: String
@@ -15,10 +18,24 @@ public actor RAWGClient {
     /// - Parameters:
     ///   - apiKey: Your RAWG API key
     ///   - baseURL: Base URL for the API (default: https://api.rawg.io/api)
-    public init(apiKey: String, baseURL: String = "https://api.rawg.io/api") {
+    ///   - cacheEnabled: Enable or disable caching (default: true)
+    public init(apiKey: String, baseURL: String = "https://api.rawg.io/api", cacheEnabled: Bool = true) {
         self.apiKey = apiKey
         self.baseURL = baseURL
-        self.networkManager = NetworkManager()
+        self.networkManager = NetworkManager(cacheEnabled: cacheEnabled)
+    }
+
+    // MARK: - Cache Control
+
+    /// Clear all cached responses
+    public func clearCache() async {
+        await networkManager.clearCache()
+    }
+
+    /// Get cache statistics
+    /// - Returns: Statistics about cache usage including total, valid, and expired entries
+    public func cacheStats() async -> CacheStats {
+        await networkManager.cacheStats()
     }
 
     // MARK: - Helpers
