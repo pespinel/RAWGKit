@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.1] - 2024-12-01
+
 ### Added
 - In-memory caching system for API responses
   - Configurable TTL (default 5 minutes)
@@ -95,3 +98,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release workflow with automatic GitHub releases
 
 [1.0]: https://github.com/pespinel/RAWGKit/releases/tag/v1.0
+[1.1]: https://github.com/pespinel/RAWGKit/releases/tag/v1.1
