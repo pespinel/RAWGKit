@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Publisher information
 public struct Publisher: Codable, Identifiable, Sendable {
     public let id: Int

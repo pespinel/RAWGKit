@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Store details with description
 public struct StoreDetails: Codable, Identifiable, Sendable {
     public let id: Int

@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Video clip
 public struct Clip: Codable, Sendable {
     public let clip: String?

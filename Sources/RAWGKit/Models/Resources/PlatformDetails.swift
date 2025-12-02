@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Platform details with description and additional info
 public struct PlatformDetails: Codable, Identifiable, Sendable {
     public let id: Int

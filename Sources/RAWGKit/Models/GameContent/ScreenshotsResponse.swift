@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 public struct ScreenshotsResponse: Codable, Sendable {
     public let count: Int
     public let next: String?

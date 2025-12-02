@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Movie/trailer data with different quality options
 public struct MovieData: Codable, Sendable {
     public let size480: String?

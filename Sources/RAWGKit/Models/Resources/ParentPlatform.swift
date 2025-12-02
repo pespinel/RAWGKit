@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Parent platform with child platforms
 public struct ParentPlatform: Codable, Identifiable, Hashable, Sendable {
     public let id: Int

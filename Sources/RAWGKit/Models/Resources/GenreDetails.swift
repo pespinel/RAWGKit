@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Genre details with description
 public struct GenreDetails: Codable, Identifiable, Sendable {
     public let id: Int

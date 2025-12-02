@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Creator details with additional info
 public struct CreatorDetails: Codable, Identifiable, Sendable {
     public let id: Int

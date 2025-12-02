@@ -8,16 +8,31 @@
 --indentcase false
 --trimwhitespace always
 --allman false
---wraparguments before-first
---wrapparameters before-first
---wrapcollections before-first
+--wraparguments preserve
+--wrapparameters preserve
+--wrapcollections preserve
 --closingparen balanced
 --funcattributes prev-line
 --typeattributes prev-line
 --varattributes prev-line
 --maxwidth 120
 --wrapternary before-operators
+--elseposition same-line
+--guardelse same-line
+--xcodeindentation enabled
 
-# Rules
+# Line endings and whitespace
+--linebreaks lf
+--insertlines enabled
+--removelines enabled
+
+# Rules to enable
+--enable isEmpty
+--enable sortImports
+
+# Rules to disable
 --disable redundantSelf
+--disable wrapMultilineStatementBraces
+
+# Swift version
 --swiftversion 5.9

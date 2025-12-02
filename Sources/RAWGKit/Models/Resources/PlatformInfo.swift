@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Platform info with release date and requirements
 public struct PlatformInfo: Codable, Identifiable, Hashable, Sendable {
     public let platform: Platform

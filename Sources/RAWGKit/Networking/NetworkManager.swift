@@ -47,11 +47,11 @@ actor NetworkManager {
         if let policy = retryPolicy {
             return try await fetchWithRetry(from: url, as: T.self, policy: policy, useCache: useCache)
         }
-        
+
         // Single attempt without retry
         return try await performFetch(from: url, as: T.self, useCache: useCache)
     }
-    
+
     /// Perform fetch with retry logic
     private func fetchWithRetry<T: Decodable>(
         from url: URL,
@@ -61,20 +61,20 @@ actor NetworkManager {
     ) async throws -> T {
         var attempt = 0
         var lastError: NetworkError?
-        
+
         while attempt < policy.maxRetries {
             do {
                 return try await performFetch(from: url, as: T.self, useCache: useCache)
             } catch let error as NetworkError {
                 lastError = error
-                
+
                 if policy.shouldRetry(error, attempt: attempt) {
                     let delay = policy.delay(for: attempt)
-                    
+
                     #if DEBUG
-                    print("⚠️ RAWGKit: Retry attempt \(attempt + 1)/\(policy.maxRetries) after \(delay)s delay")
+                        print("⚠️ RAWGKit: Retry attempt \(attempt + 1)/\(policy.maxRetries) after \(delay)s delay")
                     #endif
-                    
+
                     try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
                     attempt += 1
                 } else {
@@ -82,19 +82,19 @@ actor NetworkManager {
                 }
             }
         }
-        
+
         throw lastError ?? NetworkError.unknown(URLError(.unknown))
     }
-    
+
     /// Perform a single fetch attempt
     private func performFetch<T: Decodable>(from url: URL, as _: T.Type, useCache: Bool) async throws -> T {
         do {
             let (data, response) = try await session.data(from: url)
-            
+
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse
             }
-            
+
             switch httpResponse.statusCode {
             case 200 ... 299:
                 break
@@ -113,7 +113,7 @@ actor NetworkManager {
             default:
                 throw NetworkError.invalidResponse
             }
-            
+
             do {
                 let decoded = try decoder.decode(T.self, from: data)
                 // Cache successful responses

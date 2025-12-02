@@ -9,16 +9,16 @@ import Foundation
 public struct RetryPolicy: Sendable {
     /// Maximum number of retry attempts
     public let maxRetries: Int
-    
+
     /// Base delay between retries (will be exponentially increased)
     public let baseDelay: TimeInterval
-    
+
     /// Maximum delay between retries
     public let maxDelay: TimeInterval
-    
+
     /// Whether to use exponential backoff
     public let useExponentialBackoff: Bool
-    
+
     public init(
         maxRetries: Int = 3,
         baseDelay: TimeInterval = 1.0,
@@ -30,26 +30,26 @@ public struct RetryPolicy: Sendable {
         self.maxDelay = maxDelay
         self.useExponentialBackoff = useExponentialBackoff
     }
-    
+
     /// Calculate delay for a given attempt
     func delay(for attempt: Int) -> TimeInterval {
         guard useExponentialBackoff else {
             return baseDelay
         }
-        
+
         let exponentialDelay = baseDelay * pow(2.0, Double(attempt))
         return min(exponentialDelay, maxDelay)
     }
-    
+
     /// Check if an error should be retried
     func shouldRetry(_ error: NetworkError, attempt: Int) -> Bool {
         guard attempt < maxRetries else { return false }
-        
+
         // Check if error type matches any retryable error
         switch error {
         case .timeout, .noInternetConnection:
             return true
-        case .serverError(let code):
+        case let .serverError(code):
             return code >= 500 && code < 600 // 5xx errors are retryable
         case .rateLimitExceeded:
             return true // Rate limit is retryable with backoff
@@ -74,7 +74,7 @@ extension NetworkError: Hashable {
             hasher.combine("unauthorized")
         case .notFound:
             hasher.combine("notFound")
-        case .apiError(let message):
+        case let .apiError(message):
             hasher.combine("apiError")
             hasher.combine(message)
         case .rateLimitExceeded:
@@ -83,14 +83,14 @@ extension NetworkError: Hashable {
             hasher.combine("noInternetConnection")
         case .timeout:
             hasher.combine("timeout")
-        case .serverError(let code):
+        case let .serverError(code):
             hasher.combine("serverError")
             hasher.combine(code)
         case .unknown:
             hasher.combine("unknown")
         }
     }
-    
+
     public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidURL, .invalidURL),
@@ -102,13 +102,13 @@ extension NetworkError: Hashable {
              (.noInternetConnection, .noInternetConnection),
              (.timeout, .timeout),
              (.unknown, .unknown):
-            return true
-        case (.apiError(let msg1), .apiError(let msg2)):
-            return msg1 == msg2
-        case (.serverError(let code1), .serverError(let code2)):
-            return code1 == code2
+            true
+        case let (.apiError(msg1), .apiError(msg2)):
+            msg1 == msg2
+        case let (.serverError(code1), .serverError(code2)):
+            code1 == code2
         default:
-            return false
+            false
         }
     }
 }

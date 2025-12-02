@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Tag information
 public struct Tag: Codable, Identifiable, Hashable, Sendable {
     public let id: Int

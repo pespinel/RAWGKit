@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Game store link
 public struct GameStore: Codable, Identifiable, Sendable {
     public let id: Int

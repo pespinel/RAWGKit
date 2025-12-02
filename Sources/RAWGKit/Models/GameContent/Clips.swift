@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 /// Video clips in different sizes
 public struct Clips: Codable, Sendable {
     public let size320: String?

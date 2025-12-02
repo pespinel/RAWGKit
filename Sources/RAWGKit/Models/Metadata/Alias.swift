@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 public typealias GamesResponse = RAWGResponse<Game>
 public typealias GenresResponse = RAWGResponse<Genre>
 public typealias PlatformsResponse = RAWGResponse<Platform>

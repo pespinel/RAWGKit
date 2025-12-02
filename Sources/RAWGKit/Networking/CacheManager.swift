@@ -56,7 +56,7 @@ public actor CacheManager {
         CacheStats(
             totalEntries: cache.count,
             validEntries: cache.values.filter { !$0.isExpired }.count,
-            expiredEntries: cache.values.filter { $0.isExpired }.count
+            expiredEntries: cache.values.filter(\.isExpired).count
         )
     }
 

@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 public struct DeveloperDetails: Codable, Identifiable, Sendable {
     public let id: Int
     public let name: String

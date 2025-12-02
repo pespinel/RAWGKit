@@ -5,7 +5,6 @@
 //  Created by Pablo Espinel on 30/11/25.
 //
 
-
 public struct Screenshot: Codable, Identifiable, Sendable {
     public let id: Int
     public let image: String
