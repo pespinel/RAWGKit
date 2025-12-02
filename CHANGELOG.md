@@ -12,11 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `clearCache()` - Clear all cached responses
   - `cacheStats()` - Get cache statistics
   - `cacheEnabled` parameter in init to enable/disable caching
+- Retry logic with exponential backoff
+  - `RetryPolicy` for configuring retry behavior
+  - Automatic retry for transient errors (timeout, no internet, 5xx)
+  - Configurable max retries, delays, and backoff strategy
+- AsyncSequence support for infinite pagination
+  - `gamesSequence()` - Stream games with automatic pagination
+  - `genresSequence()` - Stream genres with automatic pagination
+  - `platformsSequence()` - Stream platforms with automatic pagination
 - Comprehensive test coverage for new features
   - CacheManager tests (7 tests)
   - RAWGResponse extensions tests (12 tests)
   - NetworkError tests (11 tests)
-  - Total: 65 tests (was 35)
+  - RetryPolicy tests (20 tests)
+  - Total: 77 tests (was 35)
 
 ### Changed
 - Made CacheManager and CacheStats public for external access
