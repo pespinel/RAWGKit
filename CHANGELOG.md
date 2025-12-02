@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2]
+
 ### Added
 - Public API for cache control in RAWGClient
   - `clearCache()` - Clear all cached responses
@@ -31,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made CacheManager and CacheStats public for external access
 - CacheStats now conforms to Sendable for thread-safety
 
-## [1.1] - 2024-12-01
+## [1.1]
 
 ### Added
 - In-memory caching system for API responses
@@ -71,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced error handling and user feedback
 - Clearer model organization
 
-## [1.0] - 2024-12-01
+## [1.0]
 
 ### Added
 - Complete SDK for RAWG Video Games Database API
@@ -122,3 +124,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [1.0]: https://github.com/pespinel/RAWGKit/releases/tag/v1.0
 [1.1]: https://github.com/pespinel/RAWGKit/releases/tag/v1.1
+[1.2]: https://github.com/pespinel/RAWGKit/releases/tag/v1.2
