@@ -1,0 +1,114 @@
+//
+// RetryPolicy.swift
+// RAWGKit
+//
+
+import Foundation
+
+/// Configuration for retry behavior
+public struct RetryPolicy: Sendable {
+    /// Maximum number of retry attempts
+    public let maxRetries: Int
+    
+    /// Base delay between retries (will be exponentially increased)
+    public let baseDelay: TimeInterval
+    
+    /// Maximum delay between retries
+    public let maxDelay: TimeInterval
+    
+    /// Whether to use exponential backoff
+    public let useExponentialBackoff: Bool
+    
+    public init(
+        maxRetries: Int = 3,
+        baseDelay: TimeInterval = 1.0,
+        maxDelay: TimeInterval = 60.0,
+        useExponentialBackoff: Bool = true
+    ) {
+        self.maxRetries = maxRetries
+        self.baseDelay = baseDelay
+        self.maxDelay = maxDelay
+        self.useExponentialBackoff = useExponentialBackoff
+    }
+    
+    /// Calculate delay for a given attempt
+    func delay(for attempt: Int) -> TimeInterval {
+        guard useExponentialBackoff else {
+            return baseDelay
+        }
+        
+        let exponentialDelay = baseDelay * pow(2.0, Double(attempt))
+        return min(exponentialDelay, maxDelay)
+    }
+    
+    /// Check if an error should be retried
+    func shouldRetry(_ error: NetworkError, attempt: Int) -> Bool {
+        guard attempt < maxRetries else { return false }
+        
+        // Check if error type matches any retryable error
+        switch error {
+        case .timeout, .noInternetConnection:
+            return true
+        case .serverError(let code):
+            return code >= 500 && code < 600 // 5xx errors are retryable
+        case .rateLimitExceeded:
+            return true // Rate limit is retryable with backoff
+        case .unknown:
+            return true // Unknown errors might be transient
+        default:
+            return false
+        }
+    }
+}
+
+extension NetworkError: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case .invalidURL:
+            hasher.combine("invalidURL")
+        case .invalidResponse:
+            hasher.combine("invalidResponse")
+        case .decodingError:
+            hasher.combine("decodingError")
+        case .unauthorized:
+            hasher.combine("unauthorized")
+        case .notFound:
+            hasher.combine("notFound")
+        case .apiError(let message):
+            hasher.combine("apiError")
+            hasher.combine(message)
+        case .rateLimitExceeded:
+            hasher.combine("rateLimitExceeded")
+        case .noInternetConnection:
+            hasher.combine("noInternetConnection")
+        case .timeout:
+            hasher.combine("timeout")
+        case .serverError(let code):
+            hasher.combine("serverError")
+            hasher.combine(code)
+        case .unknown:
+            hasher.combine("unknown")
+        }
+    }
+    
+    public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
+        switch (lhs, rhs) {
+        case (.invalidURL, .invalidURL),
+             (.invalidResponse, .invalidResponse),
+             (.decodingError, .decodingError),
+             (.unauthorized, .unauthorized),
+             (.notFound, .notFound),
+             (.rateLimitExceeded, .rateLimitExceeded),
+             (.noInternetConnection, .noInternetConnection),
+             (.timeout, .timeout),
+             (.unknown, .unknown):
+            return true
+        case (.apiError(let msg1), .apiError(let msg2)):
+            return msg1 == msg2
+        case (.serverError(let code1), .serverError(let code2)):
+            return code1 == code2
+        default:
+            return false
+        }
+    }
+}

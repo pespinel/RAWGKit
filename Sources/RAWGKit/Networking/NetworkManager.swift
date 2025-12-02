@@ -11,8 +11,13 @@ actor NetworkManager {
     private let decoder: JSONDecoder
     private let cache: CacheManager
     private let cacheEnabled: Bool
+    private let retryPolicy: RetryPolicy?
 
-    init(session _: URLSession = .shared, cacheEnabled: Bool = true) {
+    init(
+        session _: URLSession = .shared,
+        cacheEnabled: Bool = true,
+        retryPolicy: RetryPolicy? = RetryPolicy()
+    ) {
         let configuration = URLSessionConfiguration.default
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.urlCache = URLCache(
@@ -24,6 +29,7 @@ actor NetworkManager {
         self.decoder = JSONDecoder()
         self.cache = CacheManager()
         self.cacheEnabled = cacheEnabled
+        self.retryPolicy = retryPolicy
     }
 
     /// Fetches and decodes data from a URL with optional caching
@@ -37,49 +43,110 @@ actor NetworkManager {
             }
         }
 
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.invalidResponse
+        // Try with retry logic if enabled
+        if let policy = retryPolicy {
+            return try await fetchWithRetry(from: url, as: T.self, policy: policy, useCache: useCache)
         }
-
-        switch httpResponse.statusCode {
-        case 200 ... 299:
-            break
-        case 401:
-            throw NetworkError.unauthorized
-        case 404:
-            throw NetworkError.notFound
-        case 429:
-            let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
-            let seconds = retryAfter.flatMap(Int.init)
-            throw NetworkError.rateLimitExceeded(retryAfter: seconds)
-        case 400 ... 499:
-            throw NetworkError.apiError("Client error: \(httpResponse.statusCode)")
-        case 500 ... 599:
-            throw NetworkError.serverError(httpResponse.statusCode)
-        default:
-            throw NetworkError.invalidResponse
-        }
-
-        do {
-            let decoded = try decoder.decode(T.self, from: data)
-            // Cache successful responses
-            if cacheEnabled, useCache {
-                await cache.set(data, for: url)
-            }
-            return decoded
-        } catch {
-            #if DEBUG
-                print("❌ RAWGKit Decoding error: \(error)")
-                if
-                    let json = try? JSONSerialization.jsonObject(with: data),
-                    let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                    let prettyString = String(data: prettyData, encoding: .utf8)
-                    print("📄 Response JSON:\n\(prettyString ?? "")")
+        
+        // Single attempt without retry
+        return try await performFetch(from: url, as: T.self, useCache: useCache)
+    }
+    
+    /// Perform fetch with retry logic
+    private func fetchWithRetry<T: Decodable>(
+        from url: URL,
+        as _: T.Type,
+        policy: RetryPolicy,
+        useCache: Bool
+    ) async throws -> T {
+        var attempt = 0
+        var lastError: NetworkError?
+        
+        while attempt < policy.maxRetries {
+            do {
+                return try await performFetch(from: url, as: T.self, useCache: useCache)
+            } catch let error as NetworkError {
+                lastError = error
+                
+                if policy.shouldRetry(error, attempt: attempt) {
+                    let delay = policy.delay(for: attempt)
+                    
+                    #if DEBUG
+                    print("⚠️ RAWGKit: Retry attempt \(attempt + 1)/\(policy.maxRetries) after \(delay)s delay")
+                    #endif
+                    
+                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    attempt += 1
+                } else {
+                    throw error
                 }
-            #endif
-            throw NetworkError.decodingError
+            }
+        }
+        
+        throw lastError ?? NetworkError.unknown(URLError(.unknown))
+    }
+    
+    /// Perform a single fetch attempt
+    private func performFetch<T: Decodable>(from url: URL, as _: T.Type, useCache: Bool) async throws -> T {
+        do {
+            let (data, response) = try await session.data(from: url)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            
+            switch httpResponse.statusCode {
+            case 200 ... 299:
+                break
+            case 401:
+                throw NetworkError.unauthorized
+            case 404:
+                throw NetworkError.notFound
+            case 429:
+                let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
+                let seconds = retryAfter.flatMap(Int.init)
+                throw NetworkError.rateLimitExceeded(retryAfter: seconds)
+            case 400 ... 499:
+                throw NetworkError.apiError("Client error: \(httpResponse.statusCode)")
+            case 500 ... 599:
+                throw NetworkError.serverError(httpResponse.statusCode)
+            default:
+                throw NetworkError.invalidResponse
+            }
+            
+            do {
+                let decoded = try decoder.decode(T.self, from: data)
+                // Cache successful responses
+                if cacheEnabled, useCache {
+                    await cache.set(data, for: url)
+                }
+                return decoded
+            } catch {
+                #if DEBUG
+                    print("❌ RAWGKit Decoding error: \(error)")
+                    if
+                        let json = try? JSONSerialization.jsonObject(with: data),
+                        let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+                        let prettyString = String(data: prettyData, encoding: .utf8)
+                        print("📄 Response JSON:\n\(prettyString ?? "")")
+                    }
+                #endif
+                throw NetworkError.decodingError
+            }
+        } catch let error as NetworkError {
+            throw error
+        } catch let urlError as URLError {
+            // Map URLError to NetworkError
+            switch urlError.code {
+            case .notConnectedToInternet, .networkConnectionLost:
+                throw NetworkError.noInternetConnection
+            case .timedOut:
+                throw NetworkError.timeout
+            default:
+                throw NetworkError.unknown(urlError)
+            }
+        } catch {
+            throw NetworkError.unknown(error)
         }
     }
 
