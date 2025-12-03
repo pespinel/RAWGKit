@@ -70,6 +70,7 @@ opt_in_rules:
 disabled_rules:
   - todo
   - trailing_comma
+  - inclusive_language
 
 # Rule configurations
 line_length:

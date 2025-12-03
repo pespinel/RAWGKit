@@ -28,6 +28,15 @@ public struct GamesQueryBuilder: Sendable {
     private var excludeParents: Bool?
     private var excludeGameSeries: Bool?
 
+    /// Shared date formatter for RAWG API date format (yyyy-MM-dd)
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter
+    }()
+
     public init() {}
 
     /// Set page number
@@ -72,6 +81,18 @@ public struct GamesQueryBuilder: Sendable {
         return builder
     }
 
+    /// Set ordering using type-safe enum
+    /// - Parameter value: Ordering option
+    /// - Returns: Builder with ordering applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .ordering(.metacriticDescending)
+    /// ```
+    public func ordering(_ value: GameOrdering) -> Self {
+        ordering(value.rawValue)
+    }
+
     /// Sort by name ascending
     public func orderByName() -> Self {
         ordering("name")
@@ -99,6 +120,18 @@ public struct GamesQueryBuilder: Sendable {
         return builder
     }
 
+    /// Filter by known platforms (type-safe)
+    /// - Parameter value: Array of known platform enums
+    /// - Returns: Builder with platforms filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .platforms([.pc, .playStation5, .xboxSeriesX])
+    /// ```
+    public func platforms(_ value: [KnownPlatform]) -> Self {
+        platforms(value.map(\.rawValue))
+    }
+
     /// Filter by parent platform IDs
     public func parentPlatforms(_ value: [Int]) -> Self {
         var builder = self
@@ -106,11 +139,35 @@ public struct GamesQueryBuilder: Sendable {
         return builder
     }
 
+    /// Filter by known parent platforms (type-safe)
+    /// - Parameter value: Array of known parent platform enums
+    /// - Returns: Builder with parent platforms filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .parentPlatforms([.playStation, .xbox, .nintendo])
+    /// ```
+    public func parentPlatforms(_ value: [KnownParentPlatform]) -> Self {
+        parentPlatforms(value.map(\.rawValue))
+    }
+
     /// Filter by genre IDs
     public func genres(_ value: [Int]) -> Self {
         var builder = self
         builder.genres = value
         return builder
+    }
+
+    /// Filter by known genres (type-safe)
+    /// - Parameter value: Array of known genre enums
+    /// - Returns: Builder with genres filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .genres([.action, .rpg, .adventure])
+    /// ```
+    public func genres(_ value: [KnownGenre]) -> Self {
+        genres(value.map(\.rawValue))
     }
 
     /// Filter by tag IDs
@@ -141,6 +198,18 @@ public struct GamesQueryBuilder: Sendable {
         return builder
     }
 
+    /// Filter by known stores (type-safe)
+    /// - Parameter value: Array of known store enums
+    /// - Returns: Builder with stores filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .stores([.steam, .epicGames, .gog])
+    /// ```
+    public func stores(_ value: [KnownStore]) -> Self {
+        stores(value.map(\.rawValue))
+    }
+
     /// Filter by creators (IDs or slugs, comma-separated)
     public func creators(_ value: String) -> Self {
         var builder = self
@@ -160,10 +229,77 @@ public struct GamesQueryBuilder: Sendable {
         dates("\(value)-01-01,\(value)-12-31")
     }
 
+    /// Filter by games released in the current year
+    public func releasedThisYear() -> Self {
+        year(Calendar.current.component(.year, from: Date()))
+    }
+
+    /// Filter by games released between two dates (type-safe)
+    /// - Parameters:
+    ///   - startDate: Start of the date range
+    ///   - endDate: End of the date range
+    /// - Returns: Builder with date range filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// let start = Calendar.current.date(from: DateComponents(year: 2023, month: 1, day: 1))!
+    /// let end = Calendar.current.date(from: DateComponents(year: 2023, month: 12, day: 31))!
+    /// .releasedBetween(from: start, to: end)
+    /// ```
+    public func releasedBetween(from startDate: Date, to endDate: Date) -> Self {
+        let start = Self.dateFormatter.string(from: startDate)
+        let end = Self.dateFormatter.string(from: endDate)
+        return dates("\(start),\(end)")
+    }
+
+    /// Filter by games released after a specific date
+    /// - Parameter date: Start date (games released from this date onwards)
+    /// - Returns: Builder with date filter applied
+    public func releasedAfter(_ date: Date) -> Self {
+        let start = Self.dateFormatter.string(from: date)
+        let farFuture = Self.dateFormatter.string(from: Date.distantFuture)
+        return dates("\(start),\(farFuture)")
+    }
+
+    /// Filter by games released before a specific date
+    /// - Parameter date: End date (games released up to this date)
+    /// - Returns: Builder with date filter applied
+    public func releasedBefore(_ date: Date) -> Self {
+        let end = Self.dateFormatter.string(from: date)
+        return dates("1970-01-01,\(end)")
+    }
+
+    /// Filter by games released in the last N days
+    /// - Parameter days: Number of days to look back
+    /// - Returns: Builder with date filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .releasedInLast(days: 30) // Games released in the last month
+    /// ```
+    public func releasedInLast(days: Int) -> Self {
+        let end = Date()
+        let start = Calendar.current.date(byAdding: .day, value: -days, to: end) ?? end
+        return releasedBetween(from: start, to: end)
+    }
+
     /// Filter by update date range
     public func updated(_ value: String) -> Self {
         var builder = self
         builder.updated = value
+        return builder
+    }
+
+    /// Filter by games updated between two dates (type-safe)
+    /// - Parameters:
+    ///   - startDate: Start of the date range
+    ///   - endDate: End of the date range
+    /// - Returns: Builder with update date range filter applied
+    public func updatedBetween(from startDate: Date, to endDate: Date) -> Self {
+        let start = Self.dateFormatter.string(from: startDate)
+        let end = Self.dateFormatter.string(from: endDate)
+        var builder = self
+        builder.updated = "\(start),\(end)"
         return builder
     }
 
@@ -177,6 +313,22 @@ public struct GamesQueryBuilder: Sendable {
     /// Filter by minimum Metacritic score
     public func metacriticMin(_ value: Int) -> Self {
         metacritic("\(value),100")
+    }
+
+    /// Filter by Metacritic score range (type-safe)
+    /// - Parameters:
+    ///   - min: Minimum score (0-100)
+    ///   - max: Maximum score (0-100)
+    /// - Returns: Builder with Metacritic filter applied
+    ///
+    /// Example:
+    /// ```swift
+    /// .metacritic(min: 80, max: 100) // Only highly rated games
+    /// ```
+    public func metacritic(min: Int, max: Int) -> Self {
+        let clampedMin = Swift.min(Swift.max(min, 0), 100)
+        let clampedMax = Swift.min(Swift.max(max, 0), 100)
+        return metacritic("\(clampedMin),\(clampedMax)")
     }
 
     /// Exclude DLC and additions
