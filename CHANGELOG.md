@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0]
+
 ### Added
 - visionOS support
 - Makefile for development workflow (`make setup`, `make test`, `make lint`, etc.)
@@ -180,3 +182,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0]: https://github.com/pespinel/RAWGKit/releases/tag/v1.0
 [1.1]: https://github.com/pespinel/RAWGKit/releases/tag/v1.1
 [1.2]: https://github.com/pespinel/RAWGKit/releases/tag/v1.2
+[2.0]: https://github.com/pespinel/RAWGKit/releases/tag/v2.0
