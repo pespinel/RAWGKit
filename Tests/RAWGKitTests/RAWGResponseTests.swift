@@ -11,7 +11,7 @@ import Testing
 struct RAWGResponseTests {
     @Test("RAWGResponse decodes from JSON with pagination")
     func responseDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "count": 100,
             "next": "https://api.rawg.io/api/games?page=2",
@@ -25,7 +25,7 @@ struct RAWGResponseTests {
                 }
             ]
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let response = try decoder.decode(RAWGResponse<Game>.self, from: json)
@@ -40,14 +40,14 @@ struct RAWGResponseTests {
 
     @Test("RAWGResponse detects no next page")
     func responseNoNextPage() throws {
-        let json = """
+        let json = Data("""
         {
             "count": 10,
             "next": null,
             "previous": "https://api.rawg.io/api/games?page=1",
             "results": []
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let response = try decoder.decode(RAWGResponse<Game>.self, from: json)

@@ -11,7 +11,7 @@ import Testing
 struct ModelTests {
     @Test("Genre decodes from JSON")
     func genreDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 4,
             "name": "Action",
@@ -19,7 +19,7 @@ struct ModelTests {
             "games_count": 12345,
             "image_background": "https://example.com/action.jpg"
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let genre = try decoder.decode(Genre.self, from: json)
@@ -32,13 +32,13 @@ struct ModelTests {
 
     @Test("Platform decodes from JSON")
     func platformDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 4,
             "name": "PC",
             "slug": "pc"
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let platform = try decoder.decode(Platform.self, from: json)
@@ -50,7 +50,7 @@ struct ModelTests {
 
     @Test("PlatformInfo decodes from JSON with requirements")
     func platformInfoDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "platform": {
                 "id": 4,
@@ -63,7 +63,7 @@ struct ModelTests {
                 "recommended": "Recommended specs"
             }
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let platformInfo = try decoder.decode(PlatformInfo.self, from: json)
@@ -76,7 +76,7 @@ struct ModelTests {
 
     @Test("Achievement decodes from JSON and calculates percent")
     func achievementDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 1,
             "name": "First Steps",
@@ -84,7 +84,7 @@ struct ModelTests {
             "image": "https://example.com/achievement.jpg",
             "percent": "85.5"
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let achievement = try decoder.decode(Achievement.self, from: json)
@@ -97,7 +97,7 @@ struct ModelTests {
 
     @Test("Store decodes from JSON")
     func storeDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 1,
             "name": "Steam",
@@ -106,7 +106,7 @@ struct ModelTests {
             "games_count": 50000,
             "image_background": "https://example.com/steam.jpg"
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let store = try decoder.decode(Store.self, from: json)
@@ -118,7 +118,7 @@ struct ModelTests {
 
     @Test("Creator decodes from JSON")
     func creatorDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 78,
             "name": "Hideo Kojima",
@@ -127,7 +127,7 @@ struct ModelTests {
             "image_background": "https://example.com/kojima_bg.jpg",
             "games_count": 30
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let creator = try decoder.decode(Creator.self, from: json)
@@ -139,7 +139,7 @@ struct ModelTests {
 
     @Test("Tag decodes from JSON")
     func tagDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 31,
             "name": "Singleplayer",
@@ -147,7 +147,7 @@ struct ModelTests {
             "language": "eng",
             "games_count": 15000
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let tag = try decoder.decode(RAWGKit.Tag.self, from: json)
@@ -159,13 +159,13 @@ struct ModelTests {
 
     @Test("ESRBRating decodes from JSON")
     func esrbRatingDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 4,
             "name": "Mature",
             "slug": "mature"
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let rating = try decoder.decode(ESRBRating.self, from: json)

@@ -331,16 +331,48 @@ RAWGKit uses industry-standard tools to ensure code quality:
 
 - **SwiftLint**: Enforces Swift style and conventions
 - **SwiftFormat**: Ensures consistent code formatting
-- **Swift Testing**: Modern testing framework with 35+ tests
+- **Swift Testing**: Modern testing framework with 77+ tests
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-Before contributing:
-1. Run `swiftlint --fix` to auto-fix style issues
-2. Run `swiftformat .` to format your code
-3. Ensure all tests pass with `swift test`
+### Development Setup
+
+1. Set up your development environment:
+```bash
+# Install tools and git hooks
+make setup
+```
+
+Or manually:
+```bash
+brew install swiftlint swiftformat
+make install-hooks
+```
+
+2. The project includes a `Makefile` with helpful commands:
+```bash
+make help           # Show all available commands
+make setup          # Install tools and git hooks
+make lint           # Run SwiftLint
+make format         # Run SwiftFormat
+make test           # Run tests
+make pre-commit     # Format, lint, and test
+make check          # Run all checks (CI simulation)
+```
+
+### Before Submitting a PR
+
+```bash
+# Run all checks
+make pre-commit
+
+# Or run CI simulation
+make check
+```
+
+The CI will also run these checks on your PR.
 
 ## License
 

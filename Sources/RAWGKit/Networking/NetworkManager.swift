@@ -13,19 +13,28 @@ actor NetworkManager {
     private let cacheEnabled: Bool
     private let retryPolicy: RetryPolicy?
 
+    /// Creates a new NetworkManager
+    /// - Parameters:
+    ///   - session: Custom URLSession for requests. If nil, creates a default session.
+    ///   - cacheEnabled: Whether to use in-memory caching (default: true)
+    ///   - retryPolicy: Policy for retrying failed requests (default: 3 retries with exponential backoff)
+    ///   - requestTimeout: Timeout for requests in seconds (default: 30)
     init(
-        session _: URLSession = .shared,
+        session: URLSession? = nil,
         cacheEnabled: Bool = true,
-        retryPolicy: RetryPolicy? = RetryPolicy()
+        retryPolicy: RetryPolicy? = RetryPolicy(),
+        requestTimeout: TimeInterval = 30.0
     ) {
-        let configuration = URLSessionConfiguration.default
-        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        configuration.urlCache = URLCache(
-            memoryCapacity: 50 * 1024 * 1024, // 50 MB
-            diskCapacity: 200 * 1024 * 1024 // 200 MB
-        )
+        if let session {
+            self.session = session
+        } else {
+            let configuration = URLSessionConfiguration.default
+            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+            configuration.urlCache = nil // We use our own CacheManager
+            configuration.timeoutIntervalForRequest = requestTimeout
+            self.session = URLSession(configuration: configuration)
+        }
 
-        self.session = URLSession(configuration: configuration)
         self.decoder = JSONDecoder()
         self.cache = CacheManager()
         self.cacheEnabled = cacheEnabled

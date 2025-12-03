@@ -81,78 +81,34 @@ public actor RAWGClient {
             "page": String(page),
             "page_size": String(min(pageSize, 40)),
         ]
-
-        if let search, !search.isEmpty {
-            queryItems["search"] = search
-        }
-
-        if let searchPrecise {
-            queryItems["search_precise"] = String(searchPrecise)
-        }
-
-        if let searchExact {
-            queryItems["search_exact"] = String(searchExact)
-        }
-
-        if let ordering {
-            queryItems["ordering"] = ordering
-        }
-
+        if let search, !search.isEmpty { queryItems["search"] = search }
+        if let searchPrecise { queryItems["search_precise"] = String(searchPrecise) }
+        if let searchExact { queryItems["search_exact"] = String(searchExact) }
+        if let ordering { queryItems["ordering"] = ordering }
         if let platforms, !platforms.isEmpty {
             queryItems["platforms"] = platforms.map(String.init).joined(separator: ",")
         }
-
         if let parentPlatforms, !parentPlatforms.isEmpty {
             queryItems["parent_platforms"] = parentPlatforms.map(String.init).joined(separator: ",")
         }
-
         if let genres, !genres.isEmpty {
             queryItems["genres"] = genres.map(String.init).joined(separator: ",")
         }
-
         if let tags, !tags.isEmpty {
             queryItems["tags"] = tags.map(String.init).joined(separator: ",")
         }
-
-        if let developers, !developers.isEmpty {
-            queryItems["developers"] = developers
-        }
-
-        if let publishers, !publishers.isEmpty {
-            queryItems["publishers"] = publishers
-        }
-
+        if let developers, !developers.isEmpty { queryItems["developers"] = developers }
+        if let publishers, !publishers.isEmpty { queryItems["publishers"] = publishers }
         if let stores, !stores.isEmpty {
             queryItems["stores"] = stores.map(String.init).joined(separator: ",")
         }
-
-        if let creators, !creators.isEmpty {
-            queryItems["creators"] = creators
-        }
-
-        if let dates, !dates.isEmpty {
-            queryItems["dates"] = dates
-        }
-
-        if let updated, !updated.isEmpty {
-            queryItems["updated"] = updated
-        }
-
-        if let metacritic, !metacritic.isEmpty {
-            queryItems["metacritic"] = metacritic
-        }
-
-        if let excludeAdditions {
-            queryItems["exclude_additions"] = String(excludeAdditions)
-        }
-
-        if let excludeParents {
-            queryItems["exclude_parents"] = String(excludeParents)
-        }
-
-        if let excludeGameSeries {
-            queryItems["exclude_game_series"] = String(excludeGameSeries)
-        }
+        if let creators, !creators.isEmpty { queryItems["creators"] = creators }
+        if let dates, !dates.isEmpty { queryItems["dates"] = dates }
+        if let updated, !updated.isEmpty { queryItems["updated"] = updated }
+        if let metacritic, !metacritic.isEmpty { queryItems["metacritic"] = metacritic }
+        if let excludeAdditions { queryItems["exclude_additions"] = String(excludeAdditions) }
+        if let excludeParents { queryItems["exclude_parents"] = String(excludeParents) }
+        if let excludeGameSeries { queryItems["exclude_game_series"] = String(excludeGameSeries) }
 
         let url = try url(for: .games, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GamesResponse.self)

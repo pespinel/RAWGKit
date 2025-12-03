@@ -133,8 +133,11 @@ struct RetryPolicyTests {
 
     @Test("NetworkError equality")
     func networkErrorEquality() {
+        // swiftlint:disable:next identical_operands
         #expect(NetworkError.timeout == NetworkError.timeout)
+        // swiftlint:disable:next identical_operands
         #expect(NetworkError.notFound == NetworkError.notFound)
+        // swiftlint:disable:next identical_operands
         #expect(NetworkError.serverError(500) == NetworkError.serverError(500))
         #expect(NetworkError.serverError(500) != NetworkError.serverError(502))
         #expect(NetworkError.timeout != NetworkError.notFound)

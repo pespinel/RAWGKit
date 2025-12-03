@@ -40,7 +40,8 @@ public extension RAWGResponse {
 
     /// Progress through all results (0.0 to 1.0)
     var progress: Double {
-        guard count > 0 else { return 1.0 }
+        // swiftlint:disable:next empty_count
+        guard count > 0 else { return 1.0 } // Protects division by zero below
         guard let current = currentPage else { return 0.0 }
         let itemsProcessed = (current - 1) * results.count + results.count
         return min(Double(itemsProcessed) / Double(count), 1.0)

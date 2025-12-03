@@ -11,7 +11,7 @@ import Testing
 struct GameTests {
     @Test("Game decodes from JSON correctly")
     func gameDecoding() throws {
-        let json = """
+        let json = Data("""
         {
             "id": 3498,
             "name": "Grand Theft Auto V",
@@ -24,7 +24,7 @@ struct GameTests {
             "metacritic": 97,
             "playtime": 73
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let decoder = JSONDecoder()
         let game = try decoder.decode(Game.self, from: json)

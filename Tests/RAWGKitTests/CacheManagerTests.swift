@@ -13,7 +13,7 @@ struct CacheManagerTests {
     func cacheSetAndGet() async throws {
         let cache = CacheManager()
         let url = URL(string: "https://api.rawg.io/api/games")!
-        let testData = "test data".data(using: .utf8)!
+        let testData = Data("test data".utf8)
 
         await cache.set(testData, for: url)
         let retrieved = await cache.get(for: url)
@@ -36,7 +36,7 @@ struct CacheManagerTests {
     func cacheTTL() async throws {
         let cache = CacheManager()
         let url = URL(string: "https://api.rawg.io/api/games")!
-        let testData = "test data".data(using: .utf8)!
+        let testData = Data("test data".utf8)
 
         // Set with very short TTL
         await cache.set(testData, for: url, ttl: 0.1)
@@ -58,7 +58,7 @@ struct CacheManagerTests {
         let cache = CacheManager()
         let url1 = URL(string: "https://api.rawg.io/api/games")!
         let url2 = URL(string: "https://api.rawg.io/api/genres")!
-        let testData = "test data".data(using: .utf8)!
+        let testData = Data("test data".utf8)
 
         await cache.set(testData, for: url1)
         await cache.set(testData, for: url2)
@@ -77,7 +77,7 @@ struct CacheManagerTests {
         let cache = CacheManager()
         let url1 = URL(string: "https://api.rawg.io/api/games")!
         let url2 = URL(string: "https://api.rawg.io/api/genres")!
-        let testData = "test data".data(using: .utf8)!
+        let testData = Data("test data".utf8)
 
         // Initially empty
         var stats = await cache.stats
@@ -106,7 +106,7 @@ struct CacheManagerTests {
         let cache = CacheManager()
         let url1 = URL(string: "https://api.rawg.io/api/games")!
         let url2 = URL(string: "https://api.rawg.io/api/genres")!
-        let testData = "test data".data(using: .utf8)!
+        let testData = Data("test data".utf8)
 
         await cache.set(testData, for: url1, ttl: 0.1)
         await cache.set(testData, for: url2, ttl: 300)
