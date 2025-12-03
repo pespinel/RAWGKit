@@ -279,6 +279,8 @@ let client = RAWGClient(apiKey: "your-api-key")
 - `fetchGameStores(id:page:pageSize:)` - Get store links
 - `fetchGameAchievements(id:)` - Get achievements
 - `fetchGameRedditPosts(id:)` - Get Reddit posts
+- `fetchGameTwitchStreams(id:page:pageSize:)` - Get Twitch streams
+- `fetchGameYouTubeVideos(id:page:pageSize:)` - Get YouTube videos
 
 #### Genres
 

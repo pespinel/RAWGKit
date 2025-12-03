@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `releasedInLast(days:)` - Filter games from last N days
   - `updatedBetween(from:to:)` - Filter by update date range
 - `metacritic(min:max:)` - Type-safe Metacritic range filter with clamping
+- **Twitch and YouTube endpoints**:
+  - `fetchGameTwitchStreams(id:)` - Get Twitch streams for a game
+  - `fetchGameYouTubeVideos(id:)` - Get YouTube videos for a game
+  - New models: `TwitchStream`, `YouTubeVideo`, `YouTubeThumbnails`
 
 ### Changed
 - NetworkManager now accepts custom URLSession for testing
