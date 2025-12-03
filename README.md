@@ -5,11 +5,13 @@ A modern, Swift-native SDK for the RAWG Video Games Database API.
 ## Features
 
 - ✅ **Complete API Coverage**: Access to all RAWG API endpoints
-- 🔒 **Type-Safe**: Fully typed responses with Codable models
-- ⚡ **Modern Swift**: Uses async/await for clean, readable code
+- 🔒 **Type-Safe**: Fully typed responses with Codable models and type-safe query filters
+- ⚡ **Modern Swift**: Uses async/await and AsyncSequence for clean, readable code
 - 🎯 **Actor-Based**: Thread-safe networking with Swift's actor model
-- 📱 **Cross-Platform**: Supports iOS 15+, macOS 12+, watchOS 8+, tvOS 15+
-- 🔨 **Query Builder**: Fluent API for building complex queries
+- 📱 **Cross-Platform**: Supports iOS 15+, macOS 12+, watchOS 8+, tvOS 15+, visionOS 1+
+- 🔨 **Query Builder**: Fluent API with type-safe enums for platforms, genres, stores
+- 🔄 **Auto-Pagination**: AsyncSequence support for iterating through all results
+- 💾 **Smart Caching**: NSCache-based caching with automatic memory management
 - 📄 **Well-Documented**: Comprehensive documentation and examples
 
 ## Installation
@@ -72,16 +74,76 @@ for screenshot in screenshots.results {
 ### Using the Query Builder
 
 ```swift
+// Type-safe query with enums (recommended)
 let response = try await client.gamesQuery()
     .search("witcher")
     .orderByRating()
     .year(2015)
-    .platforms([4, 18, 1]) // PC, PS4, Xbox One
+    .platforms([.pc, .playStation4, .xboxOne])
+    .genres([.rpg, .action])
     .metacriticMin(80)
     .pageSize(20)
     .execute(with: client)
 
 print("Found \(response.count) games")
+```
+
+### Type-Safe Filters
+
+RAWGKit provides type-safe enums for common filters:
+
+```swift
+// Platforms
+.platforms([.pc, .playStation5, .xboxSeriesX, .nintendoSwitch])
+.parentPlatforms([.playStation, .xbox, .nintendo])
+
+// Genres
+.genres([.action, .rpg, .adventure, .shooter])
+
+// Stores
+.stores([.steam, .epicGames, .playStationStore, .nintendoStore])
+
+// Ordering
+.ordering(.metacriticDescending)
+.ordering(.releasedDescending)
+```
+
+### Date Helpers
+
+```swift
+// Games released this year
+.releasedThisYear()
+
+// Games from a specific date range
+.releasedBetween(from: startDate, to: endDate)
+
+// Games released in the last 30 days
+.releasedInLast(days: 30)
+
+// Games released after a date
+.releasedAfter(someDate)
+
+// Games released before a date
+.releasedBefore(someDate)
+```
+
+### Async Sequences for Pagination
+
+Automatically paginate through all results:
+
+```swift
+// Iterate through all games matching a query
+for try await game in client.allGames(search: "zelda") {
+    print(game.name)
+}
+
+// Iterate through all genres
+for try await genre in client.allGenres() {
+    print(genre.name)
+}
+
+// Also available: allPlatforms(), allDevelopers(), allPublishers(), 
+// allStores(), allTags(), allCreators()
 ```
 
 ### Search for Games
@@ -93,15 +155,15 @@ let results = try await client.fetchGames(
     ordering: "-rating"
 )
 
-// Advanced search with filters
-let filtered = try await client.fetchGames(
-    search: "cyberpunk",
-    searchExact: true,
-    platforms: [4], // PC
-    genres: [4], // Action
-    dates: "2020-01-01,2023-12-31",
-    metacritic: "80,100"
-)
+// Advanced search with query builder (recommended)
+let filtered = try await client.gamesQuery()
+    .search("cyberpunk")
+    .searchExact()
+    .platforms([.pc])
+    .genres([.action])
+    .releasedBetween(from: startDate, to: endDate)
+    .metacritic(min: 80, max: 100)
+    .execute(with: client)
 ```
 
 ### Explore Genres, Platforms, and More
@@ -325,13 +387,37 @@ See [RAWG API Terms](https://rawg.io/apidocs) for full details.
 - Swift 5.9+
 - Xcode 15.0+
 
+## Caching
+
+RAWGKit includes smart caching with automatic memory management:
+
+```swift
+// Caching is enabled by default
+let client = RAWGClient(apiKey: "your-api-key")
+
+// Disable caching if needed
+let clientNoCache = RAWGClient(apiKey: "your-api-key", cacheEnabled: false)
+
+// Clear cache manually
+await client.clearCache()
+
+// Get cache statistics
+let stats = await client.cacheStats()
+print("Cached entries: \(stats.totalEntries)")
+```
+
+Features:
+- **NSCache-based**: Automatic eviction under memory pressure
+- **TTL support**: Entries expire after 5 minutes by default
+- **Thread-safe**: Safe to use from any thread/task
+
 ## Code Quality
 
 RAWGKit uses industry-standard tools to ensure code quality:
 
 - **SwiftLint**: Enforces Swift style and conventions
 - **SwiftFormat**: Ensures consistent code formatting
-- **Swift Testing**: Modern testing framework with 77+ tests
+- **Swift Testing**: Modern testing framework with 100+ tests
 
 ## Contributing
 
