@@ -5,61 +5,131 @@
 
 import Foundation
 
-/// Simple in-memory cache for API responses
-public actor CacheManager {
-    private var cache: [String: CacheEntry] = [:]
-    private let defaultTTL: TimeInterval = 300 // 5 minutes
+/// In-memory cache for API responses using NSCache for automatic memory management
+public final class CacheManager: @unchecked Sendable {
+    private let cache = NSCache<NSString, CacheEntry>()
+    private let lock = NSLock()
+    private var keys = Set<String>()
+    private let defaultTTL: TimeInterval
 
-    struct CacheEntry {
+    /// Cache entry wrapper for NSCache with TTL support
+    private final class CacheEntry: NSObject {
         let data: Data
-        let timestamp: Date
-        let ttl: TimeInterval
+        let expirationDate: Date
+
+        init(data: Data, ttl: TimeInterval) {
+            self.data = data
+            self.expirationDate = Date().addingTimeInterval(ttl)
+            super.init()
+        }
 
         var isExpired: Bool {
-            Date().timeIntervalSince(timestamp) > ttl
+            Date() > expirationDate
         }
     }
 
+    /// Creates a new CacheManager
+    /// - Parameters:
+    ///   - countLimit: Maximum number of entries (0 = no limit, uses system default)
+    ///   - totalCostLimit: Maximum total cost in bytes (0 = no limit, uses system default)
+    ///   - defaultTTL: Default time-to-live for entries in seconds (default: 5 minutes)
+    public init(countLimit: Int = 100, totalCostLimit: Int = 10 * 1024 * 1024, defaultTTL: TimeInterval = 300) {
+        self.defaultTTL = defaultTTL
+        cache.countLimit = countLimit
+        cache.totalCostLimit = totalCostLimit
+    }
+
     /// Get cached data for a URL
-    func get(for url: URL) -> Data? {
-        let key = url.absoluteString
-        guard let entry = cache[key], !entry.isExpired else {
-            cache.removeValue(forKey: key)
+    /// - Parameter url: The URL to look up
+    /// - Returns: Cached data if available and not expired, nil otherwise
+    public func get(for url: URL) -> Data? {
+        let key = url.absoluteString as NSString
+
+        guard let entry = cache.object(forKey: key) else {
             return nil
         }
+
+        if entry.isExpired {
+            cache.removeObject(forKey: key)
+            lock.lock()
+            keys.remove(url.absoluteString)
+            lock.unlock()
+            return nil
+        }
+
         return entry.data
     }
 
     /// Set cached data for a URL
-    func set(_ data: Data, for url: URL, ttl: TimeInterval? = nil) {
-        let key = url.absoluteString
-        let entry = CacheEntry(
-            data: data,
-            timestamp: Date(),
-            ttl: ttl ?? defaultTTL
-        )
-        cache[key] = entry
+    /// - Parameters:
+    ///   - data: Data to cache
+    ///   - url: URL as cache key
+    ///   - ttl: Time-to-live in seconds (uses default if nil)
+    public func set(_ data: Data, for url: URL, ttl: TimeInterval? = nil) {
+        let key = url.absoluteString as NSString
+        let entry = CacheEntry(data: data, ttl: ttl ?? defaultTTL)
+
+        // Use data size as cost for memory-based eviction
+        cache.setObject(entry, forKey: key, cost: data.count)
+
+        lock.lock()
+        keys.insert(url.absoluteString)
+        lock.unlock()
     }
 
     /// Clear all cached data
-    func clear() {
-        cache.removeAll()
+    public func clear() {
+        cache.removeAllObjects()
+        lock.lock()
+        keys.removeAll()
+        lock.unlock()
     }
 
     /// Remove expired entries
-    func cleanExpired() {
-        cache = cache.filter { !$0.value.isExpired }
+    public func cleanExpired() {
+        lock.lock()
+        let currentKeys = keys
+        lock.unlock()
+
+        for keyString in currentKeys {
+            let key = keyString as NSString
+            if let entry = cache.object(forKey: key), entry.isExpired {
+                cache.removeObject(forKey: key)
+                lock.lock()
+                keys.remove(keyString)
+                lock.unlock()
+            }
+        }
     }
 
     /// Get cache statistics
-    var stats: CacheStats {
-        CacheStats(
-            totalEntries: cache.count,
-            validEntries: cache.values.filter { !$0.isExpired }.count,
-            expiredEntries: cache.values.filter(\.isExpired).count
+    public var stats: CacheStats {
+        lock.lock()
+        let currentKeys = keys
+        lock.unlock()
+
+        var validCount = 0
+        var expiredCount = 0
+
+        for keyString in currentKeys {
+            let key = keyString as NSString
+            if let entry = cache.object(forKey: key) {
+                if entry.isExpired {
+                    expiredCount += 1
+                } else {
+                    validCount += 1
+                }
+            }
+        }
+
+        return CacheStats(
+            totalEntries: validCount + expiredCount,
+            validEntries: validCount,
+            expiredEntries: expiredCount
         )
     }
 
+    /// Cache statistics
     public struct CacheStats: Sendable {
         public let totalEntries: Int
         public let validEntries: Int

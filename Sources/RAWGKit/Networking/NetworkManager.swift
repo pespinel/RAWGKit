@@ -44,7 +44,7 @@ actor NetworkManager {
     /// Fetches and decodes data from a URL with optional caching
     func fetch<T: Decodable>(from url: URL, as _: T.Type, useCache: Bool = true) async throws -> T {
         // Check cache first
-        if cacheEnabled, useCache, let cachedData = await cache.get(for: url) {
+        if cacheEnabled, useCache, let cachedData = cache.get(for: url) {
             do {
                 return try decoder.decode(T.self, from: cachedData)
             } catch {
@@ -127,7 +127,7 @@ actor NetworkManager {
                 let decoded = try decoder.decode(T.self, from: data)
                 // Cache successful responses
                 if cacheEnabled, useCache {
-                    await cache.set(data, for: url)
+                    cache.set(data, for: url)
                 }
                 return decoded
             } catch {
@@ -160,13 +160,13 @@ actor NetworkManager {
     }
 
     /// Clear cache
-    func clearCache() async {
-        await cache.clear()
+    func clearCache() {
+        cache.clear()
     }
 
     /// Get cache statistics
-    func cacheStats() async -> CacheManager.CacheStats {
-        await cache.stats
+    func cacheStats() -> CacheManager.CacheStats {
+        cache.stats
     }
 
     /// Builds a URL with query parameters
