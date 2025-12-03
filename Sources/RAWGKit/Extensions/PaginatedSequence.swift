@@ -40,6 +40,61 @@ public extension RAWGClient {
             try await self.fetchPlatforms(page: page, pageSize: size)
         }
     }
+
+    /// Create an async sequence for paginating through developers
+    /// - Parameter pageSize: Number of items per page
+    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    func developersSequence(
+        pageSize: Int = 20
+    ) -> AsyncThrowingStream<Developer, Error> {
+        paginatedSequence(pageSize: pageSize) { page, size in
+            try await self.fetchDevelopers(page: page, pageSize: size)
+        }
+    }
+
+    /// Create an async sequence for paginating through publishers
+    /// - Parameter pageSize: Number of items per page
+    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    func publishersSequence(
+        pageSize: Int = 20
+    ) -> AsyncThrowingStream<Publisher, Error> {
+        paginatedSequence(pageSize: pageSize) { page, size in
+            try await self.fetchPublishers(page: page, pageSize: size)
+        }
+    }
+
+    /// Create an async sequence for paginating through stores
+    /// - Parameter pageSize: Number of items per page
+    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    func storesSequence(
+        pageSize: Int = 20
+    ) -> AsyncThrowingStream<Store, Error> {
+        paginatedSequence(pageSize: pageSize) { page, size in
+            try await self.fetchStores(page: page, pageSize: size)
+        }
+    }
+
+    /// Create an async sequence for paginating through tags
+    /// - Parameter pageSize: Number of items per page
+    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    func tagsSequence(
+        pageSize: Int = 20
+    ) -> AsyncThrowingStream<Tag, Error> {
+        paginatedSequence(pageSize: pageSize) { page, size in
+            try await self.fetchTags(page: page, pageSize: size)
+        }
+    }
+
+    /// Create an async sequence for paginating through creators
+    /// - Parameter pageSize: Number of items per page
+    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    func creatorsSequence(
+        pageSize: Int = 20
+    ) -> AsyncThrowingStream<Creator, Error> {
+        paginatedSequence(pageSize: pageSize) { page, size in
+            try await self.fetchCreators(page: page, pageSize: size)
+        }
+    }
 }
 
 // MARK: - Private Helper

@@ -11,13 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - visionOS support
 - Makefile for development workflow (`make setup`, `make test`, `make lint`, etc.)
 - Configurable request timeout in NetworkManager
-- Task cancellation support for AsyncSequences (`gamesSequence`, `genresSequence`, `platformsSequence`)
+- Task cancellation support for AsyncSequences
+- New AsyncSequences for all resources:
+  - `developersSequence()` - Stream developers with automatic pagination
+  - `publishersSequence()` - Stream publishers with automatic pagination
+  - `storesSequence()` - Stream stores with automatic pagination
+  - `tagsSequence()` - Stream tags with automatic pagination
+  - `creatorsSequence()` - Stream creators with automatic pagination
 
 ### Changed
 - NetworkManager now accepts custom URLSession for testing
 - Removed unused SwiftLint/SwiftFormat SPM dependencies (use CLI instead)
 - AsyncSequences refactored to use generic helper, reducing code duplication
 - Enabled StrictConcurrency experimental feature
+
+### Removed
+- Unused `ResourceProtocol.swift` with empty protocol definitions (dead code cleanup)
 
 ### Fixed
 - NetworkManager `session` parameter was being ignored
