@@ -232,6 +232,36 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: RedditPostsResponse.self)
     }
 
+    /// Fetches Twitch streams for a game
+    public func fetchGameTwitchStreams(
+        id: Int,
+        page: Int = 1,
+        pageSize: Int = 20
+    ) async throws -> TwitchStreamsResponse {
+        let queryItems: [String: String] = [
+            "key": apiKey,
+            "page": String(page),
+            "page_size": String(pageSize),
+        ]
+        let url = try url(for: .gameTwitch(id: id), queryItems: queryItems)
+        return try await networkManager.fetch(from: url, as: TwitchStreamsResponse.self)
+    }
+
+    /// Fetches YouTube videos for a game
+    public func fetchGameYouTubeVideos(
+        id: Int,
+        page: Int = 1,
+        pageSize: Int = 20
+    ) async throws -> YouTubeVideosResponse {
+        let queryItems: [String: String] = [
+            "key": apiKey,
+            "page": String(page),
+            "page_size": String(pageSize),
+        ]
+        let url = try url(for: .gameYouTube(id: id), queryItems: queryItems)
+        return try await networkManager.fetch(from: url, as: YouTubeVideosResponse.self)
+    }
+
     // MARK: - Genres
 
     /// Fetches a list of game genres

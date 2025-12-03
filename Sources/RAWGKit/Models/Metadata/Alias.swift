@@ -17,3 +17,5 @@ public typealias CreatorsResponse = RAWGResponse<Creator>
 public typealias CreatorRolesResponse = RAWGResponse<CreatorRole>
 public typealias GameStoresResponse = RAWGResponse<GameStore>
 public typealias RedditPostsResponse = RAWGResponse<RedditPost>
+public typealias TwitchStreamsResponse = RAWGResponse<TwitchStream>
+public typealias YouTubeVideosResponse = RAWGResponse<YouTubeVideo>
