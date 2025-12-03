@@ -18,12 +18,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `storesSequence()` - Stream stores with automatic pagination
   - `tagsSequence()` - Stream tags with automatic pagination
   - `creatorsSequence()` - Stream creators with automatic pagination
+- **Type-safe query filters** with enums for better DX:
+  - `KnownPlatform` - PC, PlayStation, Xbox, Nintendo, mobile platforms
+  - `KnownParentPlatform` - Platform categories (PlayStation, Xbox, Nintendo, etc.)
+  - `KnownGenre` - Action, RPG, Adventure, Shooter, and more
+  - `KnownStore` - Steam, Epic Games, PlayStation Store, Nintendo Store, etc.
+  - `GameOrdering` - Type-safe ordering options
+- **Date helpers** in GamesQueryBuilder:
+  - `releasedThisYear()` - Filter games from current year
+  - `releasedBetween(from:to:)` - Filter by date range with Date objects
+  - `releasedAfter(_:)` / `releasedBefore(_:)` - Filter by single date
+  - `releasedInLast(days:)` - Filter games from last N days
+  - `updatedBetween(from:to:)` - Filter by update date range
+- `metacritic(min:max:)` - Type-safe Metacritic range filter with clamping
 
 ### Changed
 - NetworkManager now accepts custom URLSession for testing
 - Removed unused SwiftLint/SwiftFormat SPM dependencies (use CLI instead)
 - AsyncSequences refactored to use generic helper, reducing code duplication
 - Enabled StrictConcurrency experimental feature
+- **CacheManager refactored to use NSCache**:
+  - Automatic memory eviction under system pressure
+  - Configurable `countLimit` (default: 100 entries)
+  - Configurable `totalCostLimit` (default: 10MB)
+  - Uses data size as cost for intelligent eviction
+  - Maintains TTL support via wrapper class
+- Test count increased to 103 (was 77)
 
 ### Removed
 - Unused `ResourceProtocol.swift` with empty protocol definitions (dead code cleanup)
@@ -35,6 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 - Updated README with improved development setup instructions
 - Added `make setup` for one-command dev environment setup
+- Added documentation for type-safe query filters
+- Added documentation for AsyncSequences and caching
 
 ## [1.2]
 
