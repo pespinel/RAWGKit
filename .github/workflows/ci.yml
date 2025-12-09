@@ -9,7 +9,7 @@ on:
 jobs:
   lint:
     name: SwiftLint
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
 
   format:
     name: SwiftFormat
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
     needs: [lint, format]
     strategy:
       matrix:
-        os: [macos-14, macos-13]
+        os: [macos-15, macos-latest]
 
     steps:
       - name: Checkout code
@@ -48,7 +48,7 @@ jobs:
       - name: Setup Swift
         uses: swift-actions/setup-swift@v2
         with:
-          swift-version: "5.9"
+          swift-version: "6.0"
 
       - name: Swift version
         run: swift --version
@@ -61,7 +61,7 @@ jobs:
 
   coverage:
     name: Code Coverage
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [lint, format]
     steps:
       - name: Checkout code
@@ -70,7 +70,7 @@ jobs:
       - name: Setup Swift
         uses: swift-actions/setup-swift@v2
         with:
-          swift-version: "5.9"
+          swift-version: "6.0"
 
       - name: Run tests with coverage
         run: swift test --enable-code-coverage
