@@ -298,7 +298,16 @@ RAWGKit/
 │       ├── CacheManager.swift    # Response caching
 │       └── RetryPolicy.swift     # Retry logic
 ├── Tests/RAWGKitTests/           # Test suite
-└── Examples.swift                # Usage examples
+│   ├── Unit/                     # Unit tests
+│   │   ├── Core/                 # Core model tests
+│   │   ├── Networking/           # Network layer tests
+│   │   └── Extensions/           # Extension tests
+│   └── Integration/              # Integration tests
+└── Examples/                     # Usage examples
+    ├── BasicUsage.swift          # Basic examples
+    ├── AdvancedQueries.swift     # Advanced queries
+    ├── AsyncSequences.swift      # Async streaming
+    └── README.md                 # Examples documentation
 ```
 
 ## Code Review Checklist
