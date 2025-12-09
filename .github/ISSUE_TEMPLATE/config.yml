@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/pespinel/RAWGKit/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 RAWG API Documentation
+    url: https://rawg.io/apidocs
+    about: Official RAWG API documentation
