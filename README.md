@@ -537,6 +537,14 @@ MIT License - see LICENSE file for details
 - Data provided by [RAWG.io](https://rawg.io)
 - Built with ❤️ using Swift
 
+## Examples
+
+Check out the [Examples/](Examples/) directory for comprehensive usage examples:
+
+- **[BasicUsage.swift](Examples/BasicUsage.swift)** - Client initialization, fetching games, searching, error handling, caching
+- **[AdvancedQueries.swift](Examples/AdvancedQueries.swift)** - Query builder, filtering, date ranges, complex queries
+- **[AsyncSequences.swift](Examples/AsyncSequences.swift)** - Streaming large datasets, pagination, task cancellation
+
 ## Support
 
 - 📚 [RAWG API Documentation](https://api.rawg.io/docs/)

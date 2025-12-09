@@ -15,9 +15,6 @@ DerivedData/
 # GitHub Instructions (internal documentation)
 .github/instructions/
 
-# Examples file (for development only)
-Examples.swift
-
 # Test coverage
 .coverage
 *.gcov
