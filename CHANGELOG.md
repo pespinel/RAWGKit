@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1]
+
+### Added
+- GitHub issue templates (bug report, feature request, documentation)
+- Pull request template with comprehensive checklist
+- Coverage reporting in CI pipeline with lcov generation
+- Centralized constants in `RAWGConstants` for API limits, cache settings, and network timeouts
+- Structured logging with `os.Logger` through `RAWGLogger`
+- Request deduplication in NetworkManager to prevent duplicate concurrent requests
+- Comprehensive DocC documentation for all public APIs
+- `cancelAllRequests()` method in NetworkManager for canceling all active network tasks
+
+### Changed
+- NetworkManager refactored with extracted helper methods for improved maintainability
+- README enhanced with badges, requirements section, expanded features, and architecture details
+
+### Improved
+- Better code organization through centralized constants
+- Enhanced debugging with structured logging replacing print statements
+- Improved performance through request deduplication
+- Better developer experience with comprehensive API documentation
+
 ## [2.0]
 
 ### Added
@@ -183,3 +205,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1]: https://github.com/pespinel/RAWGKit/releases/tag/v1.1
 [1.2]: https://github.com/pespinel/RAWGKit/releases/tag/v1.2
 [2.0]: https://github.com/pespinel/RAWGKit/releases/tag/v2.0
+[2.1]: https://github.com/pespinel/RAWGKit/releases/tag/v2.1
