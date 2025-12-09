@@ -13,6 +13,7 @@ actor NetworkManager {
     private let cache: CacheManager
     private let cacheEnabled: Bool
     private let retryPolicy: RetryPolicy?
+    private var activeTasks: [URL: Task<Data, Error>] = [:]
 
     /// Creates a new NetworkManager
     /// - Parameters:
@@ -96,63 +97,100 @@ actor NetworkManager {
 
     /// Perform a single fetch attempt
     private func performFetch<T: Decodable>(from url: URL, as _: T.Type, useCache: Bool) async throws -> T {
-        do {
+        // Check if there's already a request in flight
+        if let existingTask = activeTasks[url] {
+            let data = try await existingTask.value
+            return try decoder.decode(T.self, from: data)
+        }
+
+        // Create and track new task
+        let task = Task<Data, Error> {
             let (data, response) = try await session.data(from: url)
+            try validateResponse(response)
+            return data
+        }
 
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw NetworkError.invalidResponse
-            }
+        activeTasks[url] = task
 
-            switch httpResponse.statusCode {
-            case 200 ... 299:
-                break
-            case 401:
-                throw NetworkError.unauthorized
-            case 404:
-                throw NetworkError.notFound
-            case 429:
-                let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
-                let seconds = retryAfter.flatMap(Int.init)
-                throw NetworkError.rateLimitExceeded(retryAfter: seconds)
-            case 400 ... 499:
-                throw NetworkError.apiError("Client error: \(httpResponse.statusCode)")
-            case 500 ... 599:
-                throw NetworkError.serverError(httpResponse.statusCode)
-            default:
-                throw NetworkError.invalidResponse
-            }
-
-            do {
-                let decoded = try decoder.decode(T.self, from: data)
-                // Cache successful responses
-                if cacheEnabled, useCache {
-                    cache.set(data, for: url)
-                }
-                return decoded
-            } catch {
-                RAWGLogger.network.error("Decoding error: \(error.localizedDescription)")
-                if let json = try? JSONSerialization.jsonObject(with: data),
-                   let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted),
-                   let prettyString = String(data: prettyData, encoding: .utf8) {
-                    RAWGLogger.network.debug("Response JSON: \(prettyString)")
-                }
-                throw NetworkError.decodingError
-            }
+        do {
+            let data = try await task.value
+            activeTasks.removeValue(forKey: url)
+            return try decodeAndCache(data, for: url, useCache: useCache)
         } catch let error as NetworkError {
+            activeTasks.removeValue(forKey: url)
             throw error
         } catch let urlError as URLError {
-            // Map URLError to NetworkError
-            switch urlError.code {
-            case .notConnectedToInternet, .networkConnectionLost:
-                throw NetworkError.noInternetConnection
-            case .timedOut:
-                throw NetworkError.timeout
-            default:
-                throw NetworkError.unknown(urlError)
-            }
+            activeTasks.removeValue(forKey: url)
+            throw mapURLError(urlError)
         } catch {
+            activeTasks.removeValue(forKey: url)
             throw NetworkError.unknown(error)
         }
+    }
+
+    /// Validate HTTP response status code
+    private func validateResponse(_ response: URLResponse) throws {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
+        }
+
+        switch httpResponse.statusCode {
+        case 200 ... 299:
+            break
+        case 401:
+            throw NetworkError.unauthorized
+        case 404:
+            throw NetworkError.notFound
+        case 429:
+            let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
+            let seconds = retryAfter.flatMap(Int.init)
+            throw NetworkError.rateLimitExceeded(retryAfter: seconds)
+        case 400 ... 499:
+            throw NetworkError.apiError("Client error: \(httpResponse.statusCode)")
+        case 500 ... 599:
+            throw NetworkError.serverError(httpResponse.statusCode)
+        default:
+            throw NetworkError.invalidResponse
+        }
+    }
+
+    /// Decode data and cache if enabled
+    private func decodeAndCache<T: Decodable>(_ data: Data, for url: URL, useCache: Bool) throws -> T {
+        do {
+            let decoded = try decoder.decode(T.self, from: data)
+            if cacheEnabled, useCache {
+                cache.set(data, for: url)
+            }
+            return decoded
+        } catch {
+            RAWGLogger.network.error("Decoding error: \(error.localizedDescription)")
+            if let json = try? JSONSerialization.jsonObject(with: data),
+               let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted),
+               let prettyString = String(data: prettyData, encoding: .utf8) {
+                RAWGLogger.network.debug("Response JSON: \(prettyString)")
+            }
+            throw NetworkError.decodingError
+        }
+    }
+
+    /// Map URLError to NetworkError
+    private func mapURLError(_ error: URLError) -> NetworkError {
+        switch error.code {
+        case .notConnectedToInternet, .networkConnectionLost:
+            .noInternetConnection
+        case .timedOut:
+            .timeout
+        default:
+            .unknown(error)
+        }
+    }
+
+    /// Cancel all active requests
+    func cancelAllRequests() {
+        for (_, task) in activeTasks {
+            task.cancel()
+        }
+        activeTasks.removeAll()
     }
 
     /// Clear cache
