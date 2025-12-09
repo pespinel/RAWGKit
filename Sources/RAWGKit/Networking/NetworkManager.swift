@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import os.log
 
 /// Handles HTTP networking operations
 actor NetworkManager {
@@ -80,9 +81,7 @@ actor NetworkManager {
                 if policy.shouldRetry(error, attempt: attempt) {
                     let delay = policy.delay(for: attempt)
 
-                    #if DEBUG
-                        print("⚠️ RAWGKit: Retry attempt \(attempt + 1)/\(policy.maxRetries) after \(delay)s delay")
-                    #endif
+                    RAWGLogger.network.debug("Retry attempt \(attempt + 1)/\(policy.maxRetries) after \(delay)s delay")
 
                     try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
                     attempt += 1
@@ -131,15 +130,12 @@ actor NetworkManager {
                 }
                 return decoded
             } catch {
-                #if DEBUG
-                    print("❌ RAWGKit Decoding error: \(error)")
-                    if
-                        let json = try? JSONSerialization.jsonObject(with: data),
-                        let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                        let prettyString = String(data: prettyData, encoding: .utf8)
-                        print("📄 Response JSON:\n\(prettyString ?? "")")
-                    }
-                #endif
+                RAWGLogger.network.error("Decoding error: \(error.localizedDescription)")
+                if let json = try? JSONSerialization.jsonObject(with: data),
+                   let prettyData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted),
+                   let prettyString = String(data: prettyData, encoding: .utf8) {
+                    RAWGLogger.network.debug("Response JSON: \(prettyString)")
+                }
                 throw NetworkError.decodingError
             }
         } catch let error as NetworkError {
