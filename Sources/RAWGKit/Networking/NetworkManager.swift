@@ -6,7 +6,33 @@
 import Foundation
 import os.log
 
-/// Handles HTTP networking operations
+/// Actor responsible for managing HTTP networking operations with caching and retry logic.
+///
+/// `NetworkManager` is the core networking component of RAWGKit that handles all HTTP requests
+/// to the RAWG API. It provides thread-safe network operations using Swift's actor isolation,
+/// automatic request deduplication, in-memory caching with TTL, and configurable retry policies.
+///
+/// ## Features
+///
+/// - **Thread Safety**: Actor isolation ensures safe concurrent access
+/// - **Request Deduplication**: Prevents duplicate simultaneous requests to the same URL
+/// - **In-Memory Caching**: Optional caching with configurable TTL (default: 5 minutes)
+/// - **Automatic Retries**: Configurable retry policy with exponential backoff
+/// - **Structured Logging**: Uses `os.Logger` for debugging and error tracking
+/// - **Cancellation Support**: All active requests can be cancelled via `cancelAllRequests()`
+///
+/// ## Usage
+///
+/// NetworkManager is typically instantiated internally by `RAWGClient` and not used directly:
+///
+/// ```swift
+/// // Internal usage by RAWGClient
+/// let manager = NetworkManager(cacheEnabled: true)
+/// let response: GamesResponse = try await manager.fetch(from: url, as: GamesResponse.self)
+/// ```
+///
+/// - Note: This actor uses `URLSession` for HTTP requests and `NSCache` for caching.
+///   All network operations are performed asynchronously and can throw `NetworkError`.
 actor NetworkManager {
     private let session: URLSession
     private let decoder: JSONDecoder
@@ -15,9 +41,11 @@ actor NetworkManager {
     private let retryPolicy: RetryPolicy?
     private var activeTasks: [URL: Task<Data, Error>] = [:]
 
-    /// Creates a new NetworkManager
+    /// Creates a new NetworkManager instance.
+    ///
     /// - Parameters:
-    ///   - session: Custom URLSession for requests. If nil, creates a default session.
+    ///   - session: Custom URLSession for requests. If nil, creates a default session
+    ///     with no cache policy (uses internal `CacheManager` instead)
     ///   - cacheEnabled: Whether to use in-memory caching (default: true)
     ///   - retryPolicy: Policy for retrying failed requests (default: 3 retries with exponential backoff)
     ///   - requestTimeout: Timeout for requests in seconds (default: 30)

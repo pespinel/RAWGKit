@@ -53,7 +53,10 @@ public actor RAWGClient {
 
     // MARK: - Games
 
-    /// Fetches a list of games with optional filters
+    /// Fetches a paginated list of games with extensive filtering options.
+    ///
+    /// Supports search, platform/genre/store filtering, date ranges, and Metacritic scores.
+    /// See `GamesQueryBuilder` for a fluent API to construct complex queries.
     public func fetchGames(
         page: Int = RAWGConstants.minPage,
         pageSize: Int = RAWGConstants.defaultPageSize,
@@ -114,14 +117,14 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: GamesResponse.self)
     }
 
-    /// Fetches detailed information for a specific game
+    /// Fetches comprehensive game details including description, ratings, and metadata
     public func fetchGameDetail(id: Int) async throws -> GameDetail {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .game(id: id), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GameDetail.self)
     }
 
-    /// Fetches screenshots for a game
+    /// Fetches official screenshots for a game in multiple resolutions
     public func fetchGameScreenshots(
         id: Int,
         page: Int = 1,
@@ -136,7 +139,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: ScreenshotsResponse.self)
     }
 
-    /// Fetches trailers/movies for a game
+    /// Fetches trailers and gameplay videos for a game
     public func fetchGameMovies(id: Int) async throws -> RAWGResponse<Movie> {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .gameMovies(id: id), queryItems: queryItems)
@@ -203,7 +206,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: CreatorsResponse.self)
     }
 
-    /// Fetches store links for a game
+    /// Fetches stores where a game can be purchased with links
     public func fetchGameStores(
         id: Int,
         page: Int = 1,
@@ -264,7 +267,7 @@ public actor RAWGClient {
 
     // MARK: - Genres
 
-    /// Fetches a list of game genres
+    /// Fetches all game genres with metadata and game counts
     public func fetchGenres(
         page: Int = 1,
         pageSize: Int = 20,
@@ -284,7 +287,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: GenresResponse.self)
     }
 
-    /// Fetches details for a specific genre
+    /// Fetches detailed information for a specific genre by ID
     public func fetchGenreDetails(id: Int) async throws -> GenreDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .genre(id: id), queryItems: queryItems)
@@ -293,7 +296,7 @@ public actor RAWGClient {
 
     // MARK: - Platforms
 
-    /// Fetches a list of platforms
+    /// Fetches all gaming platforms (consoles, PC, mobile) with metadata
     public func fetchPlatforms(
         page: Int = 1,
         pageSize: Int = 20,
@@ -313,14 +316,14 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: PlatformsResponse.self)
     }
 
-    /// Fetches details for a specific platform
+    /// Fetches detailed information for a specific platform by ID
     public func fetchPlatformDetails(id: Int) async throws -> PlatformDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .platform(id: id), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: PlatformDetails.self)
     }
 
-    /// Fetches a list of parent platforms
+    /// Fetches a list of parent platforms (e.g., PlayStation, Xbox, PC)
     public func fetchParentPlatforms(
         page: Int = 1,
         pageSize: Int = 20,
@@ -342,7 +345,7 @@ public actor RAWGClient {
 
     // MARK: - Developers
 
-    /// Fetches a list of game developers
+    /// Fetches a paginated list of game developers
     public func fetchDevelopers(
         page: Int = 1,
         pageSize: Int = 20
@@ -356,7 +359,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: DevelopersResponse.self)
     }
 
-    /// Fetches details for a specific developer
+    /// Fetches detailed information for a specific developer by ID
     public func fetchDeveloperDetails(id: Int) async throws -> DeveloperDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .developer(id: id), queryItems: queryItems)
@@ -365,7 +368,7 @@ public actor RAWGClient {
 
     // MARK: - Publishers
 
-    /// Fetches a list of game publishers
+    /// Fetches a paginated list of game publishers
     public func fetchPublishers(
         page: Int = 1,
         pageSize: Int = 20
@@ -379,7 +382,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: PublishersResponse.self)
     }
 
-    /// Fetches details for a specific publisher
+    /// Fetches detailed information for a specific publisher by ID
     public func fetchPublisherDetails(id: Int) async throws -> PublisherDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .publisher(id: id), queryItems: queryItems)
@@ -388,7 +391,7 @@ public actor RAWGClient {
 
     // MARK: - Stores
 
-    /// Fetches a list of game stores
+    /// Fetches digital and physical stores (Steam, PlayStation Store, etc.)
     public func fetchStores(
         page: Int = 1,
         pageSize: Int = 20,
@@ -408,7 +411,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: StoresResponse.self)
     }
 
-    /// Fetches details for a specific store
+    /// Fetches detailed information for a specific store by ID
     public func fetchStoreDetails(id: Int) async throws -> StoreDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .store(id: id), queryItems: queryItems)
@@ -417,7 +420,7 @@ public actor RAWGClient {
 
     // MARK: - Tags
 
-    /// Fetches a list of game tags
+    /// Fetches a paginated list of game tags
     public func fetchTags(
         page: Int = 1,
         pageSize: Int = 20
@@ -431,7 +434,7 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: TagsResponse.self)
     }
 
-    /// Fetches details for a specific tag
+    /// Fetches detailed information for a specific tag by ID
     public func fetchTagDetails(id: Int) async throws -> TagDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .tag(id: id), queryItems: queryItems)
@@ -440,7 +443,7 @@ public actor RAWGClient {
 
     // MARK: - Creators
 
-    /// Fetches a list of game creators
+    /// Fetches game creators, designers, and developers
     public func fetchCreators(
         page: Int = 1,
         pageSize: Int = 20
@@ -454,14 +457,14 @@ public actor RAWGClient {
         return try await networkManager.fetch(from: url, as: CreatorsResponse.self)
     }
 
-    /// Fetches details for a specific creator
+    /// Fetches detailed information for a specific creator by ID
     public func fetchCreatorDetails(id: String) async throws -> CreatorDetails {
         let queryItems: [String: String] = ["key": apiKey]
         let url = try url(for: .creator(id: id), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: CreatorDetails.self)
     }
 
-    /// Fetches a list of creator roles/positions
+    /// Fetches a paginated list of creator roles and positions
     public func fetchCreatorRoles(
         page: Int = 1,
         pageSize: Int = 20

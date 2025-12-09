@@ -7,10 +7,36 @@ import Foundation
 
 /// Extensions for RAWGClient that provide AsyncSequence pagination
 public extension RAWGClient {
-    /// Create an async sequence for paginating through games
-    /// - Parameters:
-    ///   - pageSize: Number of items per page (default: 20, max: 40)
-    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    /// Creates an async sequence that automatically paginates through all games.
+    ///
+    /// This method returns an `AsyncSequence` that fetches games page by page automatically,
+    /// yielding individual game objects. It handles pagination internally and supports
+    /// task cancellation for efficient resource management.
+    ///
+    /// - Parameter pageSize: Number of games per page (default: 20, maximum: 40)
+    ///
+    /// - Returns: An `AsyncThrowingStream` that yields `Game` objects
+    ///
+    /// ## Usage
+    /// ```swift
+    /// let client = RAWGClient(apiKey: "your-api-key")
+    ///
+    /// // Stream all games
+    /// for try await game in client.gamesSequence() {
+    ///     print(game.name)
+    /// }
+    ///
+    /// // Stop early with break
+    /// for try await game in client.gamesSequence() {
+    ///     print(game.name)
+    ///     if game.metacritic ?? 0 > 95 {
+    ///         break // Automatically cancels remaining pages
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// - Note: The sequence automatically handles pagination and stops when all results are fetched.
+    ///   Breaking from the loop will cancel any pending page fetches.
     func gamesSequence(
         pageSize: Int = 20
     ) -> AsyncThrowingStream<Game, Error> {
@@ -19,9 +45,21 @@ public extension RAWGClient {
         }
     }
 
-    /// Create an async sequence for paginating through genres
-    /// - Parameter pageSize: Number of items per page
-    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    /// Creates an async sequence that automatically paginates through all game genres.
+    ///
+    /// Returns an `AsyncSequence` that fetches genres page by page, yielding individual
+    /// genre objects. Useful for building genre selection UIs or filtering systems.
+    ///
+    /// - Parameter pageSize: Number of genres per page (default: 20, maximum: 40)
+    /// - Returns: An `AsyncThrowingStream` that yields `Genre` objects
+    ///
+    /// ## Example
+    /// ```swift
+    /// let client = RAWGClient(apiKey: "your-api-key")
+    /// for try await genre in client.genresSequence() {
+    ///     print("\(genre.name): \(genre.gamesCount) games")
+    /// }
+    /// ```
     func genresSequence(
         pageSize: Int = 20
     ) -> AsyncThrowingStream<Genre, Error> {
@@ -30,9 +68,21 @@ public extension RAWGClient {
         }
     }
 
-    /// Create an async sequence for paginating through platforms
-    /// - Parameter pageSize: Number of items per page
-    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    /// Creates an async sequence that automatically paginates through all gaming platforms.
+    ///
+    /// Returns an `AsyncSequence` that fetches platforms page by page, yielding individual
+    /// platform objects including consoles, PC, mobile devices, and more.
+    ///
+    /// - Parameter pageSize: Number of platforms per page (default: 20, maximum: 40)
+    /// - Returns: An `AsyncThrowingStream` that yields `Platform` objects
+    ///
+    /// ## Example
+    /// ```swift
+    /// let client = RAWGClient(apiKey: "your-api-key")
+    /// for try await platform in client.platformsSequence() {
+    ///     print("\(platform.name) - Released: \(platform.yearStart ?? 0)")
+    /// }
+    /// ```
     func platformsSequence(
         pageSize: Int = 20
     ) -> AsyncThrowingStream<Platform, Error> {
@@ -63,9 +113,21 @@ public extension RAWGClient {
         }
     }
 
-    /// Create an async sequence for paginating through stores
-    /// - Parameter pageSize: Number of items per page
-    /// - Returns: An async sequence that automatically fetches pages and supports cancellation
+    /// Creates an async sequence that automatically paginates through all game stores.
+    ///
+    /// Returns an `AsyncSequence` that fetches digital and physical stores where games
+    /// can be purchased, including Steam, PlayStation Store, Xbox Store, and more.
+    ///
+    /// - Parameter pageSize: Number of stores per page (default: 20, maximum: 40)
+    /// - Returns: An `AsyncThrowingStream` that yields `Store` objects
+    ///
+    /// ## Example
+    /// ```swift
+    /// let client = RAWGClient(apiKey: "your-api-key")
+    /// for try await store in client.storesSequence() {
+    ///     print("\(store.name): \(store.domain ?? "N/A")")
+    /// }
+    /// ```
     func storesSequence(
         pageSize: Int = 20
     ) -> AsyncThrowingStream<Store, Error> {

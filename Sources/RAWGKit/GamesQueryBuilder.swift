@@ -5,7 +5,45 @@
 
 import Foundation
 
-/// Builder pattern for constructing complex game queries
+/// Fluent builder for constructing complex game search queries.
+///
+/// `GamesQueryBuilder` provides a type-safe, chainable API for building sophisticated
+/// game queries with multiple filters, date ranges, platform selections, and sorting options.
+/// It follows the builder pattern to create queries that are then executed via `RAWGClient`.
+///
+/// ## Features
+///
+/// - **Fluent API**: Chain multiple filter methods for readable query construction
+/// - **Type Safety**: Compile-time checking for known platforms, genres, and orderings
+/// - **Date Helpers**: Convenient methods for date ranges and relative dates
+/// - **Metacritic Filtering**: Min/max/range filtering with automatic clamping
+/// - **Automatic Validation**: Enforces API limits (e.g., max page size of 40)
+///
+/// ## Usage
+///
+/// ```swift
+/// let client = RAWGClient(apiKey: "your-api-key")
+///
+/// // Simple search
+/// let query = GamesQueryBuilder()
+///     .search("witcher")
+///     .ordering(.metacritic, descending: true)
+///
+/// let games = try await query.execute(with: client)
+///
+/// // Complex filtering
+/// let rpgQuery = GamesQueryBuilder()
+///     .genres([.action, .rpg])
+///     .platforms([.pc, .playstation5])
+///     .releasedInLast(days: 30)
+///     .metacriticMin(80)
+///     .pageSize(40)
+///
+/// let recentRPGs = try await rpgQuery.execute(with: client)
+/// ```
+///
+/// - Note: All filter methods return a new `GamesQueryBuilder` instance, making this struct immutable.
+///   Each method call creates a copy with the updated filter, enabling safe reuse of base queries.
 public struct GamesQueryBuilder: Sendable {
     private var page: Int = RAWGConstants.minPage
     private var pageSize: Int = RAWGConstants.defaultPageSize
