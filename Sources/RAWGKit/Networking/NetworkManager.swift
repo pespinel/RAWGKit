@@ -23,7 +23,7 @@ actor NetworkManager {
         session: URLSession? = nil,
         cacheEnabled: Bool = true,
         retryPolicy: RetryPolicy? = RetryPolicy(),
-        requestTimeout: TimeInterval = 30.0
+        requestTimeout: TimeInterval = RAWGConstants.defaultRequestTimeout
     ) {
         if let session {
             self.session = session

@@ -33,7 +33,11 @@ public final class CacheManager: @unchecked Sendable {
     ///   - countLimit: Maximum number of entries (0 = no limit, uses system default)
     ///   - totalCostLimit: Maximum total cost in bytes (0 = no limit, uses system default)
     ///   - defaultTTL: Default time-to-live for entries in seconds (default: 5 minutes)
-    public init(countLimit: Int = 100, totalCostLimit: Int = 10 * 1024 * 1024, defaultTTL: TimeInterval = 300) {
+    public init(
+        countLimit: Int = RAWGConstants.defaultCacheLimit,
+        totalCostLimit: Int = 10 * 1024 * 1024,
+        defaultTTL: TimeInterval = RAWGConstants.defaultCacheTTL
+    ) {
         self.defaultTTL = defaultTTL
         cache.countLimit = countLimit
         cache.totalCostLimit = totalCostLimit

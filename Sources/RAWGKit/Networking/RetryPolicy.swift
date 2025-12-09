@@ -20,7 +20,7 @@ public struct RetryPolicy: Sendable {
     public let useExponentialBackoff: Bool
 
     public init(
-        maxRetries: Int = 3,
+        maxRetries: Int = RAWGConstants.defaultMaxRetries,
         baseDelay: TimeInterval = 1.0,
         maxDelay: TimeInterval = 60.0,
         useExponentialBackoff: Bool = true

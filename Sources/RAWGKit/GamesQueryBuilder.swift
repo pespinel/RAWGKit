@@ -7,8 +7,8 @@ import Foundation
 
 /// Builder pattern for constructing complex game queries
 public struct GamesQueryBuilder: Sendable {
-    private var page: Int = 1
-    private var pageSize: Int = 20
+    private var page: Int = RAWGConstants.minPage
+    private var pageSize: Int = RAWGConstants.defaultPageSize
     private var search: String?
     private var searchPrecise: Bool?
     private var searchExact: Bool?
@@ -49,7 +49,7 @@ public struct GamesQueryBuilder: Sendable {
     /// Set page size (max 40)
     public func pageSize(_ value: Int) -> Self {
         var builder = self
-        builder.pageSize = min(value, 40)
+        builder.pageSize = min(value, RAWGConstants.maxPageSize)
         return builder
     }
 

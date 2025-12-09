@@ -55,8 +55,8 @@ public actor RAWGClient {
 
     /// Fetches a list of games with optional filters
     public func fetchGames(
-        page: Int = 1,
-        pageSize: Int = 20,
+        page: Int = RAWGConstants.minPage,
+        pageSize: Int = RAWGConstants.defaultPageSize,
         search: String? = nil,
         searchPrecise: Bool? = nil,
         searchExact: Bool? = nil,
@@ -79,7 +79,7 @@ public actor RAWGClient {
         var queryItems: [String: String] = [
             "key": apiKey,
             "page": String(page),
-            "page_size": String(min(pageSize, 40)),
+            "page_size": String(min(pageSize, RAWGConstants.maxPageSize)),
         ]
         if let search, !search.isEmpty { queryItems["search"] = search }
         if let searchPrecise { queryItems["search_precise"] = String(searchPrecise) }
