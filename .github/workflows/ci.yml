@@ -56,3 +56,32 @@ jobs:
 
       - name: Run tests
         run: swift test
+
+  coverage:
+    name: Code Coverage
+    runs-on: macos-14
+    needs: [lint, format]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "5.9"
+
+      - name: Run tests with coverage
+        run: swift test --enable-code-coverage
+
+      - name: Generate coverage report
+        run: |
+          xcrun llvm-cov export -format="lcov" \
+            .build/debug/RAWGKitPackageTests.xctest/Contents/MacOS/RAWGKitPackageTests \
+            -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+
+      - name: Display coverage summary
+        run: |
+          echo "📊 Coverage Report Generated"
+          echo "Coverage file: coverage.lcov"
+          lines=$(grep -c "^SF:" coverage.lcov || echo "0")
+          echo "Files covered: $lines"
