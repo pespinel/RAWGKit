@@ -1,18 +1,33 @@
 # RAWGKit
 
+[![CI](https://github.com/pespinel/RAWGKit/actions/workflows/ci.yml/badge.svg)](https://github.com/pespinel/RAWGKit/actions/workflows/ci.yml)
+[![Swift Version](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
+[![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS-blue.svg)](https://developer.apple.com)
+[![SPM Compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A modern, Swift-native SDK for the RAWG Video Games Database API.
 
 ## Features
 
-- ✅ **Complete API Coverage**: Access to all RAWG API endpoints
-- 🔒 **Type-Safe**: Fully typed responses with Codable models and type-safe query filters
-- ⚡ **Modern Swift**: Uses async/await and AsyncSequence for clean, readable code
-- 🎯 **Actor-Based**: Thread-safe networking with Swift's actor model
-- 📱 **Cross-Platform**: Supports iOS 15+, macOS 12+, watchOS 8+, tvOS 15+, visionOS 1+
-- 🔨 **Query Builder**: Fluent API with type-safe enums for platforms, genres, stores
-- 🔄 **Auto-Pagination**: AsyncSequence support for iterating through all results
-- 💾 **Smart Caching**: NSCache-based caching with automatic memory management
-- 📄 **Well-Documented**: Comprehensive documentation and examples
+- ✅ **Complete API Coverage**: Access to all RAWG API endpoints (games, platforms, genres, stores, creators, and more)
+- 🔒 **Type-Safe**: Fully typed responses with Codable models and compile-time safe query filters
+- ⚡ **Modern Swift**: Built with async/await and AsyncSequence for clean, readable asynchronous code
+- 🎯 **Actor-Based Networking**: Thread-safe operations with Swift's actor model and request deduplication
+- 📱 **Cross-Platform**: iOS 15+, macOS 13+, watchOS 8+, tvOS 15+, visionOS 1+
+- 🔨 **Fluent Query Builder**: Type-safe API with enums for platforms, genres, stores, and ordering
+- 🔄 **Auto-Pagination**: Stream large result sets efficiently with AsyncSequence support
+- 💾 **Smart Caching**: In-memory NSCache with TTL and automatic memory management
+- 🔁 **Automatic Retries**: Configurable retry policy with exponential backoff for failed requests
+- 📊 **Structured Logging**: Built-in logging with os.Logger for debugging and monitoring
+- 📄 **Comprehensive Documentation**: Full DocC documentation with examples and best practices
+- ✨ **Strict Concurrency**: Sendable-compliant for safe concurrent usage
+
+## Requirements
+
+- Swift 5.9+
+- iOS 15.0+ / macOS 13.0+ / watchOS 8.0+ / tvOS 15.0+ / visionOS 1.0+
+- Xcode 15.0+
 
 ## Installation
 
@@ -413,13 +428,64 @@ Features:
 - **TTL support**: Entries expire after 5 minutes by default
 - **Thread-safe**: Safe to use from any thread/task
 
-## Code Quality
+## Performance & Architecture
 
-RAWGKit uses industry-standard tools to ensure code quality:
+RAWGKit is designed for optimal performance and reliability:
 
-- **SwiftLint**: Enforces Swift style and conventions
-- **SwiftFormat**: Ensures consistent code formatting
-- **Swift Testing**: Modern testing framework with 100+ tests
+### Request Deduplication
+Prevents duplicate simultaneous requests to the same URL, reducing API quota usage and improving performance:
+```swift
+// Multiple concurrent calls to the same endpoint
+// Only makes ONE actual network request
+async let games1 = client.fetchGameDetail(id: 3328)
+async let games2 = client.fetchGameDetail(id: 3328)
+let (result1, result2) = try await (games1, games2)
+```
+
+### Automatic Retries
+Configurable retry policy with exponential backoff for transient failures:
+- Retries on network timeouts, connection losses, and server errors (5xx)
+- Respects `Retry-After` headers for rate limiting
+- Default: 3 retries with exponential backoff
+- Does NOT retry on client errors (4xx) or decoding errors
+
+### Actor-Based Networking
+All network operations use Swift's actor model for thread safety:
+- Prevents data races and synchronization issues
+- Safe concurrent access from multiple tasks
+- No need for locks or dispatch queues
+
+### Structured Logging
+Built-in logging with `os.Logger` for debugging and monitoring:
+- Network requests and responses
+- Cache hits and misses
+- Decoding errors with JSON output
+- Performance metrics
+
+## Code Quality & Testing
+
+RAWGKit maintains high code quality standards with automated tooling and comprehensive tests:
+
+### Testing
+- **113+ tests** with Swift Testing framework
+- Unit tests for all core components
+- Integration tests with real API
+- AsyncSequence pagination tests
+- Concurrency and actor isolation tests
+- **100% test pass rate** on CI
+
+### Code Quality Tools
+- **SwiftLint**: Enforces Swift style and conventions (strict mode)
+- **SwiftFormat**: Automatic code formatting in pre-commit hooks
+- **Strict Concurrency Checking**: Enabled for maximum safety
+- **Continuous Integration**: Automated testing on macOS 13 & 14
+
+### CI/CD Pipeline
+The project uses GitHub Actions for:
+- ✅ Linting (SwiftLint)
+- ✅ Formatting (SwiftFormat)
+- ✅ Testing on multiple macOS versions
+- ✅ Code coverage reporting
 
 ## Contributing
 
