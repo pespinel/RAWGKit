@@ -5,18 +5,49 @@
 
 import Foundation
 
-/// Twitch stream information for a game
+/// Represents a Twitch stream related to a game from the RAWG API.
+///
+/// Contains metadata about Twitch broadcasts featuring the game.
 public struct TwitchStream: Codable, Identifiable, Hashable, Sendable {
+    /// Unique identifier in the RAWG database.
     public let id: Int
+
+    /// Twitch stream ID.
     public let externalId: Int?
+
+    /// Stream title.
     public let name: String?
+
+    /// Stream description.
     public let description: String?
+
+    /// Stream creation timestamp.
     public let created: String?
+
+    /// Stream publication timestamp.
     public let published: String?
+
+    /// URL to the stream thumbnail.
     public let thumbnail: String?
+
+    /// Total view count.
     public let viewCount: Int?
+
+    /// Stream language code.
     public let language: String?
 
+    /// Creates a new Twitch stream instance.
+    ///
+    /// - Parameters:
+    ///   - id: Unique identifier in RAWG database.
+    ///   - externalId: Twitch stream ID.
+    ///   - name: Stream title.
+    ///   - description: Stream description.
+    ///   - created: Stream creation timestamp.
+    ///   - published: Stream publication timestamp.
+    ///   - thumbnail: URL to the stream thumbnail.
+    ///   - viewCount: Total view count.
+    ///   - language: Stream language code.
     public init(
         id: Int,
         externalId: Int? = nil,

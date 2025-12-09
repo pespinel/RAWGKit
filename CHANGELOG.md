@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Comprehensive DocC documentation for all public types, properties, and methods
+- Detailed documentation for all model structs (Game, GameDetails, Genres, Platforms, etc.)
+- Complete API documentation for RAWGClient with usage examples
+- Documentation for all type aliases in Alias.swift
+
+### Changed
+- Reorganized test structure to mirror Sources/ organization
+- Tests now organized in Unit/ (Core/, Networking/, Extensions/) and Integration/ subdirectories
+- Improved test discoverability and maintenance
+
 ## [2.1]
 
 ### Added
