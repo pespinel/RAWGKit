@@ -17,7 +17,7 @@ public enum NetworkError: LocalizedError {
     case rateLimitExceeded(retryAfter: Int?)
     case noInternetConnection
     case timeout
-    case unknown(Error)
+    case unknown(any Error)
 
     public var errorDescription: String? {
         switch self {

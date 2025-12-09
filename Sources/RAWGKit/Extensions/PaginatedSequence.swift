@@ -39,7 +39,7 @@ public extension RAWGClient {
     ///   Breaking from the loop will cancel any pending page fetches.
     func gamesSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Game, Error> {
+    ) -> AsyncThrowingStream<Game, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchGames(page: page, pageSize: size)
         }
@@ -62,7 +62,7 @@ public extension RAWGClient {
     /// ```
     func genresSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Genre, Error> {
+    ) -> AsyncThrowingStream<Genre, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchGenres(page: page, pageSize: size)
         }
@@ -85,7 +85,7 @@ public extension RAWGClient {
     /// ```
     func platformsSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Platform, Error> {
+    ) -> AsyncThrowingStream<Platform, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchPlatforms(page: page, pageSize: size)
         }
@@ -96,7 +96,7 @@ public extension RAWGClient {
     /// - Returns: An async sequence that automatically fetches pages and supports cancellation
     func developersSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Developer, Error> {
+    ) -> AsyncThrowingStream<Developer, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchDevelopers(page: page, pageSize: size)
         }
@@ -107,7 +107,7 @@ public extension RAWGClient {
     /// - Returns: An async sequence that automatically fetches pages and supports cancellation
     func publishersSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Publisher, Error> {
+    ) -> AsyncThrowingStream<Publisher, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchPublishers(page: page, pageSize: size)
         }
@@ -130,7 +130,7 @@ public extension RAWGClient {
     /// ```
     func storesSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Store, Error> {
+    ) -> AsyncThrowingStream<Store, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchStores(page: page, pageSize: size)
         }
@@ -141,7 +141,7 @@ public extension RAWGClient {
     /// - Returns: An async sequence that automatically fetches pages and supports cancellation
     func tagsSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Tag, Error> {
+    ) -> AsyncThrowingStream<Tag, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchTags(page: page, pageSize: size)
         }
@@ -152,7 +152,7 @@ public extension RAWGClient {
     /// - Returns: An async sequence that automatically fetches pages and supports cancellation
     func creatorsSequence(
         pageSize: Int = 20
-    ) -> AsyncThrowingStream<Creator, Error> {
+    ) -> AsyncThrowingStream<Creator, any Error> {
         paginatedSequence(pageSize: pageSize) { page, size in
             try await self.fetchCreators(page: page, pageSize: size)
         }
@@ -170,7 +170,7 @@ private extension RAWGClient {
     func paginatedSequence<T: Sendable>(
         pageSize: Int,
         fetch: @escaping @Sendable (Int, Int) async throws -> RAWGResponse<T>
-    ) -> AsyncThrowingStream<T, Error> {
+    ) -> AsyncThrowingStream<T, any Error> {
         AsyncThrowingStream { continuation in
             let task = Task {
                 var currentPage = 1

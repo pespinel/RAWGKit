@@ -39,7 +39,7 @@ actor NetworkManager {
     private let cache: CacheManager
     private let cacheEnabled: Bool
     private let retryPolicy: RetryPolicy?
-    private var activeTasks: [URL: Task<Data, Error>] = [:]
+    private var activeTasks: [URL: Task<Data, any Error>] = [:]
 
     /// Creates a new NetworkManager instance.
     ///
@@ -132,7 +132,7 @@ actor NetworkManager {
         }
 
         // Create and track new task
-        let task = Task<Data, Error> {
+        let task = Task<Data, any Error> {
             let (data, response) = try await session.data(from: url)
             try validateResponse(response)
             return data

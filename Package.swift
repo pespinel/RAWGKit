@@ -20,12 +20,17 @@ let package = Package(
         .target(
             name: "RAWGKit",
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
+                .enableExperimentalFeature("StrictConcurrency"),
+                .enableUpcomingFeature("ExistentialAny")
             ]
         ),
         .testTarget(
             name: "RAWGKitTests",
-            dependencies: ["RAWGKit"]
+            dependencies: ["RAWGKit"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency"),
+                .enableUpcomingFeature("ExistentialAny")
+            ]
         ),
     ]
 )
