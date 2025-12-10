@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Resources: `Developer`, `Publisher`, `GenreDetails`, `PlatformDetails`, `DeveloperDetails`, `PublisherDetails`, `StoreDetails`, `TagDetails`, `CreatorDetails`
   - GameContent: `Achievement`, `Screenshot`, `Clip`, `Clips`, `Movie`, `MovieData`, `RedditPost`, `GameStore`, `ScreenshotsResponse`
   - Metadata: `Rating`
+- `GamesViewModel` - SwiftUI-ready ViewModel with state management
+  - ObservableObject with @Published properties for automatic UI updates
+  - Pagination support with `loadMore()` and `canLoadMore` property
+  - Search with 300ms debouncing
+  - Filter support for platforms, genres, and ordering
+  - Structured error handling with retry support
+  - Compatible with iOS 15+, macOS 13+
 
 ### Changed
 - Reorganized test structure to mirror Sources/ organization
