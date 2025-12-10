@@ -10,8 +10,7 @@ import Testing
 struct RAWGKitTests {
     @Test("Package imports correctly")
     func packageImport() {
-        let client = RAWGClient(apiKey: "test-key")
-        #expect(client != nil)
+        _ = RAWGClient(apiKey: "test-key")
     }
 
     @Test("Network error descriptions are not nil")

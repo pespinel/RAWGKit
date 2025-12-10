@@ -11,7 +11,8 @@ import Testing
 struct GamesQueryBuilderTests {
     @Test("Query builder supports method chaining")
     func queryBuilderChaining() {
-        let builder = GamesQueryBuilder()
+        // Verify that multiple methods can be chained without errors
+        _ = GamesQueryBuilder()
             .page(2)
             .pageSize(30)
             .search("zelda")
@@ -21,98 +22,70 @@ struct GamesQueryBuilderTests {
             .genres([4])
             .metacriticMin(85)
             .excludeAdditions()
-
-        #expect(builder != nil)
     }
 
     @Test("Ordering methods work correctly")
     func orderingMethods() {
-        let byName = GamesQueryBuilder().orderByName()
-        #expect(byName != nil)
-
-        let byNewest = GamesQueryBuilder().orderByNewest()
-        #expect(byNewest != nil)
-
-        let byRating = GamesQueryBuilder().orderByRating()
-        #expect(byRating != nil)
-
-        let byMetacritic = GamesQueryBuilder().orderByMetacritic()
-        #expect(byMetacritic != nil)
+        _ = GamesQueryBuilder().orderByName()
+        _ = GamesQueryBuilder().orderByNewest()
+        _ = GamesQueryBuilder().orderByRating()
+        _ = GamesQueryBuilder().orderByMetacritic()
     }
 
     @Test("Year method works correctly")
     func yearMethod() {
-        let builder = GamesQueryBuilder().year(2023)
-        #expect(builder != nil)
+        _ = GamesQueryBuilder().year(2023)
     }
 
     @Test("Metacritic min method works correctly")
     func metacriticMinMethod() {
-        let builder = GamesQueryBuilder().metacriticMin(80)
-        #expect(builder != nil)
+        _ = GamesQueryBuilder().metacriticMin(80)
     }
 
     // MARK: - Type-Safe Platform Tests
 
     @Test("Type-safe platforms method works correctly")
-    func typeSafePlatforms() {
-        let builder = GamesQueryBuilder()
+    func typeSafePlatformsMethod() {
+        _ = GamesQueryBuilder()
             .platforms([.pc, .playStation5, .xboxSeriesX])
-
-        #expect(builder != nil)
     }
 
     @Test("Type-safe parent platforms method works correctly")
-    func typeSafeParentPlatforms() {
-        let builder = GamesQueryBuilder()
+    func typeSafeParentPlatformsMethod() {
+        _ = GamesQueryBuilder()
             .parentPlatforms([.playStation, .xbox, .nintendo])
-
-        #expect(builder != nil)
     }
 
     // MARK: - Type-Safe Genre Tests
 
     @Test("Type-safe genres method works correctly")
-    func typeSafeGenres() {
-        let builder = GamesQueryBuilder()
+    func typeSafeGenresMethod() {
+        _ = GamesQueryBuilder()
             .genres([.action, .rpg, .adventure])
-
-        #expect(builder != nil)
     }
 
     // MARK: - Type-Safe Store Tests
 
     @Test("Type-safe stores method works correctly")
-    func typeSafeStores() {
-        let builder = GamesQueryBuilder()
+    func typeSafeStoresMethod() {
+        _ = GamesQueryBuilder()
             .stores([.steam, .epicGames, .gog])
-
-        #expect(builder != nil)
     }
 
     // MARK: - Type-Safe Ordering Tests
 
     @Test("Type-safe ordering method works correctly")
-    func typeSafeOrdering() {
-        let byMetacritic = GamesQueryBuilder()
-            .ordering(.metacriticDescending)
-        #expect(byMetacritic != nil)
-
-        let byRating = GamesQueryBuilder()
-            .ordering(.ratingDescending)
-        #expect(byRating != nil)
-
-        let byReleased = GamesQueryBuilder()
-            .ordering(.releasedDescending)
-        #expect(byReleased != nil)
+    func typeSafeOrderingMethod() {
+        _ = GamesQueryBuilder().ordering(.metacriticDescending)
+        _ = GamesQueryBuilder().ordering(.ratingDescending)
+        _ = GamesQueryBuilder().ordering(.releasedDescending)
     }
 
     // MARK: - Date Helper Tests
 
     @Test("releasedThisYear method works correctly")
     func releasedThisYearMethod() {
-        let builder = GamesQueryBuilder().releasedThisYear()
-        #expect(builder != nil)
+        _ = GamesQueryBuilder().releasedThisYear()
     }
 
     @Test("releasedBetween method works with Date objects")
@@ -121,30 +94,25 @@ struct GamesQueryBuilderTests {
         let startDate = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
         let endDate = calendar.date(from: DateComponents(year: 2023, month: 12, day: 31))!
 
-        let builder = GamesQueryBuilder()
+        _ = GamesQueryBuilder()
             .releasedBetween(from: startDate, to: endDate)
-
-        #expect(builder != nil)
     }
 
     @Test("releasedAfter method works correctly")
     func releasedAfterMethod() {
         let date = Calendar.current.date(from: DateComponents(year: 2020, month: 1, day: 1))!
-        let builder = GamesQueryBuilder().releasedAfter(date)
-        #expect(builder != nil)
+        _ = GamesQueryBuilder().releasedAfter(date)
     }
 
     @Test("releasedBefore method works correctly")
     func releasedBeforeMethod() {
         let date = Calendar.current.date(from: DateComponents(year: 2020, month: 12, day: 31))!
-        let builder = GamesQueryBuilder().releasedBefore(date)
-        #expect(builder != nil)
+        _ = GamesQueryBuilder().releasedBefore(date)
     }
 
     @Test("releasedInLast days method works correctly")
     func releasedInLastDaysMethod() {
-        let builder = GamesQueryBuilder().releasedInLast(days: 30)
-        #expect(builder != nil)
+        _ = GamesQueryBuilder().releasedInLast(days: 30)
     }
 
     @Test("updatedBetween method works correctly")
@@ -153,29 +121,23 @@ struct GamesQueryBuilderTests {
         let startDate = calendar.date(from: DateComponents(year: 2023, month: 6, day: 1))!
         let endDate = calendar.date(from: DateComponents(year: 2023, month: 12, day: 31))!
 
-        let builder = GamesQueryBuilder()
+        _ = GamesQueryBuilder()
             .updatedBetween(from: startDate, to: endDate)
-
-        #expect(builder != nil)
     }
 
     // MARK: - Metacritic Range Tests
 
     @Test("Metacritic range method works correctly")
     func metacriticRangeMethod() {
-        let builder = GamesQueryBuilder()
+        _ = GamesQueryBuilder()
             .metacritic(min: 80, max: 100)
-
-        #expect(builder != nil)
     }
 
     @Test("Metacritic range clamps values correctly")
     func metacriticRangeClamping() {
         // Should not crash with out-of-range values
-        let builder = GamesQueryBuilder()
+        _ = GamesQueryBuilder()
             .metacritic(min: -10, max: 150)
-
-        #expect(builder != nil)
     }
 
     // MARK: - Complex Query Tests
@@ -186,7 +148,8 @@ struct GamesQueryBuilderTests {
         let startDate = calendar.date(from: DateComponents(year: 2020, month: 1, day: 1))!
         let endDate = calendar.date(from: DateComponents(year: 2023, month: 12, day: 31))!
 
-        let builder = GamesQueryBuilder()
+        // Verify all filters can be chained together
+        _ = GamesQueryBuilder()
             .search("zelda")
             .platforms([.nintendoSwitch, .wiiU])
             .parentPlatforms([.nintendo])
@@ -197,7 +160,5 @@ struct GamesQueryBuilderTests {
             .metacritic(min: 85, max: 100)
             .pageSize(20)
             .excludeAdditions()
-
-        #expect(builder != nil)
     }
 }
