@@ -9,7 +9,7 @@ import Foundation
 ///
 /// This model contains comprehensive game data including descriptions,
 /// social media metrics, publishers, developers, and multimedia content.
-public struct GameDetail: Codable, Identifiable, Sendable {
+public struct GameDetail: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the game.
     public let id: Int
 

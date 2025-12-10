@@ -8,7 +8,7 @@
 /// Represents a link to a game on a digital store platform.
 ///
 /// Associates a game with a specific store and provides the purchase URL.
-public struct GameStore: Codable, Identifiable, Sendable {
+public struct GameStore: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the game-store association.
     public let id: Int
 

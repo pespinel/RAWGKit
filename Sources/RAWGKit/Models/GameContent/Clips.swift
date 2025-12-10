@@ -8,7 +8,7 @@
 /// Contains video clip URLs in different resolutions.
 ///
 /// Provides access to clips optimized for different screen sizes and bandwidths.
-public struct Clips: Codable, Sendable {
+public struct Clips: Codable, Hashable, Sendable {
     /// URL to the 320p resolution clip.
     public let size320: String?
 

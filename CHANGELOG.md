@@ -12,11 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Detailed documentation for all model structs (Game, GameDetails, Genres, Platforms, etc.)
 - Complete API documentation for RAWGClient with usage examples
 - Documentation for all type aliases in Alias.swift
+- `Hashable` conformance to all primary models for SwiftUI performance optimizations
+  - Core models: `Game`, `GameDetail`, `RAWGResponse`
+  - Resources: `Developer`, `Publisher`, `GenreDetails`, `PlatformDetails`, `DeveloperDetails`, `PublisherDetails`, `StoreDetails`, `TagDetails`, `CreatorDetails`
+  - GameContent: `Achievement`, `Screenshot`, `Clip`, `Clips`, `Movie`, `MovieData`, `RedditPost`, `GameStore`, `ScreenshotsResponse`
+  - Metadata: `Rating`
 
 ### Changed
 - Reorganized test structure to mirror Sources/ organization
 - Tests now organized in Unit/ (Core/, Networking/, Extensions/) and Integration/ subdirectories
 - Improved test discoverability and maintenance
+- All primary models now conform to `Hashable` for better SwiftUI List and Set performance
+- Enhanced SwiftUI compatibility across all data models
 
 ## [2.1]
 

@@ -8,7 +8,7 @@
 /// Represents a full-resolution game screenshot from the RAWG API.
 ///
 /// Screenshots provide high-quality images showcasing game visuals.
-public struct Screenshot: Codable, Identifiable, Sendable {
+public struct Screenshot: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the screenshot.
     public let id: Int
 

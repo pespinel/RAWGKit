@@ -9,7 +9,7 @@
 ///
 /// Shows distribution of user ratings across different sentiment categories
 /// (e.g., "exceptional", "recommended", "meh", "skip").
-public struct Rating: Codable, Identifiable, Sendable {
+public struct Rating: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the rating category.
     public let id: Int
 

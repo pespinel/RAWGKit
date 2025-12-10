@@ -8,7 +8,7 @@
 /// Represents detailed developer information from the RAWG API.
 ///
 /// Extends basic developer information with an HTML-formatted description.
-public struct DeveloperDetails: Codable, Identifiable, Sendable {
+public struct DeveloperDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the developer.
     public let id: Int
 

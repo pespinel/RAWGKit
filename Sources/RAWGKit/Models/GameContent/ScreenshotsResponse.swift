@@ -8,7 +8,7 @@
 /// Response wrapper for paginated screenshot results.
 ///
 /// Follows the standard RAWG pagination pattern for screenshot collections.
-public struct ScreenshotsResponse: Codable, Sendable {
+public struct ScreenshotsResponse: Codable, Hashable, Sendable {
     /// Total number of screenshots across all pages.
     public let count: Int
 

@@ -8,7 +8,7 @@
 /// Represents detailed platform information from the RAWG API.
 ///
 /// Extends basic platform information with description, images, and lifecycle dates.
-public struct PlatformDetails: Codable, Identifiable, Sendable {
+public struct PlatformDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the platform.
     public let id: Int
 

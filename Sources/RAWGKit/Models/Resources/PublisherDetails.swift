@@ -8,7 +8,7 @@
 /// Represents detailed publisher information from the RAWG API.
 ///
 /// Extends basic publisher information with an HTML-formatted description.
-public struct PublisherDetails: Codable, Identifiable, Sendable {
+public struct PublisherDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the publisher.
     public let id: Int
 

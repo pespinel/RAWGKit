@@ -8,7 +8,7 @@
 /// Represents detailed store information from the RAWG API.
 ///
 /// Extends basic store information with an HTML-formatted description.
-public struct StoreDetails: Codable, Identifiable, Sendable {
+public struct StoreDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the store.
     public let id: Int
 

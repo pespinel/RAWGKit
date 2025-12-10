@@ -8,7 +8,7 @@
 /// Represents detailed creator information from the RAWG API.
 ///
 /// Extends basic creator information with description, ratings, and review counts.
-public struct CreatorDetails: Codable, Identifiable, Sendable {
+public struct CreatorDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the creator.
     public let id: Int
 

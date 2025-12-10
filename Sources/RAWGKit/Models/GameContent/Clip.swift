@@ -8,7 +8,7 @@
 /// Represents a video clip associated with a game from the RAWG API.
 ///
 /// Clips can include trailers, gameplay footage, or other promotional videos.
-public struct Clip: Codable, Sendable {
+public struct Clip: Codable, Hashable, Sendable {
     /// URL to the main clip.
     public let clip: String?
 

@@ -8,7 +8,7 @@
 /// Contains movie/trailer URLs in different quality resolutions.
 ///
 /// Provides access to video files optimized for different bandwidth requirements.
-public struct MovieData: Codable, Sendable {
+public struct MovieData: Codable, Hashable, Sendable {
     /// URL to the 480p quality video.
     public let size480: String?
 

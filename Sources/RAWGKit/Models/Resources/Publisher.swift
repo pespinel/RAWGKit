@@ -8,7 +8,7 @@
 /// Represents a game publisher from the RAWG API.
 ///
 /// Publishers are companies responsible for marketing, distributing, and funding games.
-public struct Publisher: Codable, Identifiable, Sendable {
+public struct Publisher: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the publisher.
     public let id: Int
 

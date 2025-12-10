@@ -8,7 +8,7 @@ import Foundation
 /// Represents a game trailer or movie from the RAWG API.
 ///
 /// Movies provide promotional or gameplay videos in various qualities.
-public struct Movie: Codable, Identifiable, Sendable {
+public struct Movie: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the movie.
     public let id: Int
 

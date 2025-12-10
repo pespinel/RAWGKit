@@ -8,7 +8,7 @@ import Foundation
 /// Represents a Reddit post from a game's subreddit from the RAWG API.
 ///
 /// Contains information about community discussions related to the game.
-public struct RedditPost: Codable, Identifiable, Sendable {
+public struct RedditPost: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the post.
     public let id: Int
 

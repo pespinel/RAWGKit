@@ -8,7 +8,7 @@
 /// Represents a game development studio from the RAWG API.
 ///
 /// Developers are companies or teams responsible for creating games.
-public struct Developer: Codable, Identifiable, Sendable {
+public struct Developer: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the developer.
     public let id: Int
 

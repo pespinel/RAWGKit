@@ -8,7 +8,7 @@ import Foundation
 /// Represents a game achievement from the RAWG API.
 ///
 /// Achievements are in-game accomplishments that players can unlock.
-public struct Achievement: Codable, Identifiable, Sendable {
+public struct Achievement: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the achievement.
     public let id: Int
 

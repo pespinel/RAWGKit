@@ -8,7 +8,7 @@
 /// Represents detailed tag information from the RAWG API.
 ///
 /// Extends basic tag information with an HTML-formatted description.
-public struct TagDetails: Codable, Identifiable, Sendable {
+public struct TagDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the tag.
     public let id: Int
 

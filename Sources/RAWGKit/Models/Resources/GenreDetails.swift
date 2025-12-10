@@ -8,7 +8,7 @@
 /// Represents detailed genre information from the RAWG API.
 ///
 /// Extends basic genre information with an HTML-formatted description.
-public struct GenreDetails: Codable, Identifiable, Sendable {
+public struct GenreDetails: Codable, Identifiable, Hashable, Sendable {
     /// Unique identifier for the genre.
     public let id: Int
 
