@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Filter support for platforms, genres, and ordering
   - Structured error handling with retry support
   - Compatible with iOS 15+, macOS 13+
+- SwiftUI components and extensions
+  - `GameImageView` - Async image view with placeholder and error handling
+  - `GameRowView` - Reusable list row component for games
+  - `RatingBadgeView` - Color-coded rating badge view
+  - `View+Loading` extensions - `.showLoading()`, `.showError()`, `.showEmptyState()` modifiers
+  - All components compatible with iOS 15+, macOS 13+, tvOS 15+, watchOS 8+
 
 ### Changed
 - Reorganized test structure to mirror Sources/ organization
