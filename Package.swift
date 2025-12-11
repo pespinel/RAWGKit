@@ -21,7 +21,8 @@ let package = Package(
             name: "RAWGKit",
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
-                .enableUpcomingFeature("ExistentialAny")
+                .enableUpcomingFeature("ExistentialAny"),
+                .unsafeFlags(["-Xfrontend", "-disable-round-trip-debug-types"])
             ]
         ),
         .testTarget(
@@ -29,7 +30,8 @@ let package = Package(
             dependencies: ["RAWGKit"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
-                .enableUpcomingFeature("ExistentialAny")
+                .enableUpcomingFeature("ExistentialAny"),
+                .unsafeFlags(["-Xfrontend", "-disable-round-trip-debug-types"])
             ]
         ),
     ]

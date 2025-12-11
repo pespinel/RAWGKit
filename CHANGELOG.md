@@ -85,10 +85,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All convenience queries support method chaining for customization
 
 ### Fixed
-- GameImageView: Swift 6.0.3 compiler compatibility by simplifying view structure
-  - Replaced `.foregroundStyle()` with `.foregroundColor()`
-  - Restructured AsyncImage phase handling to avoid compiler crashes
-  - Split body into computed properties instead of methods
+- Swift 6.0.3 compiler compatibility
+  - Added `-Xfrontend -disable-round-trip-debug-types` flag to work around Swift 6.0.3 compiler crash with SwiftUI debug types
+  - Replaced `.foregroundStyle()` with `.foregroundColor()` for better compatibility
+  - Simplified GameImageView structure
 
 ## [2.1]
 
