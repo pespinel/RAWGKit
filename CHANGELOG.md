@@ -44,6 +44,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Each constant includes official RAWG API IDs
   - `.all` arrays for iteration in UI filters
   - Replaces arcaic tuple-based approach with type-safe constants
+- Query builder convenience methods and extensions
+  - `platformsPopular(_:)` - Filter by Platform.Popular constants
+  - `genresPopular(_:)` - Filter by Genre.Popular constants
+  - Static factory methods for common queries:
+    - `.popularGames()` - Popular recent releases (30 days, metacritic 75+)
+    - `.newReleases()` - Games from last 7 days
+    - `.upcomingGames()` - Upcoming releases (next 180 days)
+    - `.topRated()` - Highest-rated games (metacritic 90+)
+    - `.thisYear()` - Current year releases
+    - `.trending()` - Trending games (60 days, metacritic 70+)
+- RAWGClient convenience methods for quick access
+  - `fetchPopularGames()` - Direct access to popular games
+  - `fetchNewReleases()` - Quick access to new releases
+  - `fetchUpcomingGames()` - Fetch upcoming games easily
+  - `fetchTopRated()` - Fetch top-rated games
+  - `fetchThisYear()` - Fetch games from current year
+  - `fetchTrendingGames()` - Fetch trending games
+  - `fetchTopRated()` - Get top-rated games
+  - `fetchThisYear()` - Current year releases
+  - `fetchTrendingGames()` - Trending games shortcut
 
 ### Changed
 - Reorganized test structure to mirror Sources/ organization
@@ -52,6 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All primary models now conform to `Hashable` for better SwiftUI List and Set performance
 - Enhanced SwiftUI compatibility across all data models
 - Demo app now uses `Platform.Popular` and `Genre.Popular` constants instead of hardcoded tuples
+- Query builder now supports fluent chaining with Platform.Popular and Genre.Popular constants
+- All convenience queries support method chaining for customization
 
 ## [2.1]
 
