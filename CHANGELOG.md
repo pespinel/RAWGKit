@@ -30,6 +30,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `RatingBadgeView` - Color-coded rating badge view
   - `View+Loading` extensions - `.showLoading()`, `.showError()`, `.showEmptyState()` modifiers
   - All components compatible with iOS 15+, macOS 13+, tvOS 15+, watchOS 8+
+- Complete SwiftUI demo app (RAWGKitDemo)
+  - Full iOS app demonstrating RAWGKit integration
+  - Game list with search, filters, and infinite scrolling
+  - Platform and genre filter selection
+  - Pull-to-refresh and error handling
+  - Secure configuration with xcconfig files
+  - Screenshots and comprehensive setup guide
+  - iOS 15+ compatible with NavigationView and async/await
 
 ### Changed
 - Reorganized test structure to mirror Sources/ organization

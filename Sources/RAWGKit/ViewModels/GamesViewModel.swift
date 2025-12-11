@@ -216,7 +216,7 @@ public final class GamesViewModel: ObservableObject {
 
         searchTask = Task {
             // Debounce: wait 300ms before searching
-            try? await Task.sleep(for: .milliseconds(300))
+            try? await Task.sleep(nanoseconds: 300_000_000) // 300ms in nanoseconds
 
             guard !Task.isCancelled else { return }
             await reloadGames()

@@ -1,0 +1,14 @@
+//
+// Config.xcconfig
+// RAWGKitDemo
+//
+// Build configuration for API keys and secrets.
+//
+// USAGE:
+// 1. Copy this file to Config.local.xcconfig
+// 2. Add your actual API key to Config.local.xcconfig
+// 3. Config.local.xcconfig is gitignored, so your key stays private
+//
+
+// RAWG API Key - Replace with your actual key in Config.local.xcconfig
+RAWG_API_KEY = YOUR_API_KEY_HERE

@@ -1,0 +1,22 @@
+# Git attributes for RAWGKit
+
+# Exclude from GitHub release archives
+Examples/ export-ignore
+.github/ export-ignore
+.gitignore export-ignore
+.swiftformat export-ignore
+.swiftlint.yml export-ignore
+Makefile export-ignore
+
+# Line ending normalization
+* text=auto
+*.swift text
+*.md text
+*.yml text
+*.yaml text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary

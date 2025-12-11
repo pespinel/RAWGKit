@@ -1,0 +1,10 @@
+# RAWGKitDemo - Local Configuration Files
+
+# Ignore local configuration with actual API keys
+Config.local.xcconfig
+
+# Ignore build artifacts
+build/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+.DS_Store
