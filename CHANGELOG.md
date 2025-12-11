@@ -84,6 +84,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Query builder now supports fluent chaining with Platform.Popular and Genre.Popular constants
 - All convenience queries support method chaining for customization
 
+### Fixed
+- GameImageView: Replaced `.foregroundStyle()` with `.foregroundColor()` for Swift 6.0.3 compatibility in CI environments
+
 ## [2.1]
 
 ### Added

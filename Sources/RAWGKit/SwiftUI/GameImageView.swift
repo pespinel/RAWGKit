@@ -81,7 +81,7 @@
                     .fill(Color.secondary.opacity(0.2))
                 Image(systemName: "photo")
                     .font(.largeTitle)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
             }
             .aspectRatio(aspectRatio, contentMode: .fit)
         }
@@ -92,7 +92,7 @@
                     .fill(Color.red.opacity(0.1))
                 Image(systemName: "exclamationmark.triangle")
                     .font(.largeTitle)
-                    .foregroundStyle(.red)
+                    .foregroundColor(.red)
             }
             .aspectRatio(aspectRatio, contentMode: .fit)
         }
