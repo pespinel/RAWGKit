@@ -51,32 +51,32 @@
         }
 
         public var body: some View {
+            content
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
+        }
+
+        private var content: some View {
             Group {
                 if let urlString = url, let imageURL = URL(string: urlString) {
                     AsyncImage(url: imageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            makePlaceholderView()
-                        case let .success(image):
-                            image
+                        if phase.image != nil {
+                            phase.image!
                                 .resizable()
                                 .aspectRatio(aspectRatio, contentMode: .fill)
-                        case .failure:
-                            makeErrorView()
-                        @unknown default:
-                            makePlaceholderView()
+                        } else if phase.error != nil {
+                            errorPlaceholder
+                        } else {
+                            loadingPlaceholder
                         }
                     }
                 } else {
-                    makePlaceholderView()
+                    loadingPlaceholder
                 }
             }
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
         }
 
-        @ViewBuilder
-        private func makePlaceholderView() -> some View {
+        private var loadingPlaceholder: some View {
             ZStack {
                 Rectangle()
                     .fill(Color.secondary.opacity(0.2))
@@ -87,8 +87,7 @@
             .aspectRatio(aspectRatio, contentMode: .fit)
         }
 
-        @ViewBuilder
-        private func makeErrorView() -> some View {
+        private var errorPlaceholder: some View {
             ZStack {
                 Rectangle()
                     .fill(Color.red.opacity(0.1))
