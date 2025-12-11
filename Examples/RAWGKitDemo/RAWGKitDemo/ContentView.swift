@@ -204,23 +204,23 @@ struct FiltersView: View {
     }
 
     private let popularPlatforms = [
-        (id: 4, name: "PC"),
-        (id: 187, name: "PlayStation 5"),
-        (id: 18, name: "PlayStation 4"),
-        (id: 1, name: "Xbox One"),
-        (id: 186, name: "Xbox Series X/S"),
-        (id: 7, name: "Nintendo Switch"),
+        Platform.Popular.pc,
+        Platform.Popular.playStation5,
+        Platform.Popular.playStation4,
+        Platform.Popular.xboxOne,
+        Platform.Popular.xboxSeriesXS,
+        Platform.Popular.nintendoSwitch,
     ]
 
     private let popularGenres = [
-        (id: 4, name: "Action"),
-        (id: 3, name: "Adventure"),
-        (id: 5, name: "RPG"),
-        (id: 2, name: "Shooter"),
-        (id: 10, name: "Strategy"),
-        (id: 14, name: "Simulation"),
-        (id: 7, name: "Puzzle"),
-        (id: 15, name: "Sports"),
+        Genre.Popular.action,
+        Genre.Popular.adventure,
+        Genre.Popular.rpg,
+        Genre.Popular.shooter,
+        Genre.Popular.strategy,
+        Genre.Popular.simulation,
+        Genre.Popular.puzzle,
+        Genre.Popular.sports,
     ]
 }
 

@@ -38,6 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Secure configuration with xcconfig files
   - Screenshots and comprehensive setup guide
   - iOS 15+ compatible with NavigationView and async/await
+- Platform and Genre popular constants for improved developer experience
+  - `Platform.Popular` namespace with 10 commonly-used platforms (PC, PlayStation, Xbox, Nintendo, mobile, desktop)
+  - `Genre.Popular` namespace with 13 popular genres (Action, RPG, Strategy, etc.)
+  - Each constant includes official RAWG API IDs
+  - `.all` arrays for iteration in UI filters
+  - Replaces arcaic tuple-based approach with type-safe constants
 
 ### Changed
 - Reorganized test structure to mirror Sources/ organization
@@ -45,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved test discoverability and maintenance
 - All primary models now conform to `Hashable` for better SwiftUI List and Set performance
 - Enhanced SwiftUI compatibility across all data models
+- Demo app now uses `Platform.Popular` and `Genre.Popular` constants instead of hardcoded tuples
 
 ## [2.1]
 
