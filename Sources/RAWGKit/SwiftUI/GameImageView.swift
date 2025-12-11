@@ -56,26 +56,27 @@
                     AsyncImage(url: imageURL) { phase in
                         switch phase {
                         case .empty:
-                            placeholderView
+                            makePlaceholderView()
                         case let .success(image):
                             image
                                 .resizable()
                                 .aspectRatio(aspectRatio, contentMode: .fill)
                         case .failure:
-                            errorView
+                            makeErrorView()
                         @unknown default:
-                            placeholderView
+                            makePlaceholderView()
                         }
                     }
                 } else {
-                    placeholderView
+                    makePlaceholderView()
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
         }
 
-        private var placeholderView: some View {
+        @ViewBuilder
+        private func makePlaceholderView() -> some View {
             ZStack {
                 Rectangle()
                     .fill(Color.secondary.opacity(0.2))
@@ -86,7 +87,8 @@
             .aspectRatio(aspectRatio, contentMode: .fit)
         }
 
-        private var errorView: some View {
+        @ViewBuilder
+        private func makeErrorView() -> some View {
             ZStack {
                 Rectangle()
                     .fill(Color.red.opacity(0.1))
