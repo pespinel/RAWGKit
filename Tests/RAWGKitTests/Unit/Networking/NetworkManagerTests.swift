@@ -124,7 +124,7 @@ struct NetworkManagerTests {
         let manager = NetworkManager()
         await manager.clearCache()
         // If completes, test passes
-        #expect(true)
+        #expect(Bool(true))
     }
 
     @Test("CacheStats returns valid structure")
@@ -143,7 +143,7 @@ struct NetworkManagerTests {
         let manager = NetworkManager()
         await manager.cancelAllRequests()
         // If completes, test passes
-        #expect(true)
+        #expect(Bool(true))
     }
 
     @Test("Multiple managers are independent")

@@ -204,7 +204,7 @@ struct RAWGClientTests {
         let client = RAWGClient(apiKey: "key")
         await client.clearCache()
         // If this compiles and runs, the async signature is correct
-        #expect(true)
+        #expect(Bool(true))
     }
 
     @Test("cacheStats returns valid structure")
