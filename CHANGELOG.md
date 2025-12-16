@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- 5 performance benchmark tests validating SDK performance
+  - Cache operations < 5ms
+  - Memory cache efficiency with 100 entries < 1ms average
+  - Retry policy backoff timing validation
+  - Pagination memory efficiency verification
+  - Cache statistics calculation < 10ms
+
+### Changed
+- Updated README with Swift 6.0+ badge and requirements
+- Enhanced README with prominent SwiftUI integration section
+- Added 259 passing tests badge to README
+- Replaced Discussions link with Feature Requests in README
+
+### Fixed
+- Swift Testing warnings by using `Bool(true)` in completion tests for `clearCache()` and `cancelAllRequests()`
+
 ## [3.0]
 
 ### Added
