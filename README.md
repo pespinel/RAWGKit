@@ -1,15 +1,17 @@
 # RAWGKit
 
 [![CI](https://github.com/pespinel/RAWGKit/actions/workflows/ci.yml/badge.svg)](https://github.com/pespinel/RAWGKit/actions/workflows/ci.yml)
-[![Swift Version](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
+[![Swift Version](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS-blue.svg)](https://developer.apple.com)
+[![Tests](https://img.shields.io/badge/Tests-254%20passing-brightgreen.svg)](https://github.com/pespinel/RAWGKit/actions)
 [![SPM Compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A modern, Swift-native SDK for the RAWG Video Games Database API.
+A modern, Swift-native SDK for the RAWG Video Games Database API with first-class SwiftUI support.
 
 ## Features
 
+- 🎨 **SwiftUI First-Class**: Ready-to-use ViewModels, UI components, and [demo app](Examples/RAWGKitDemo/)
 - ✅ **Complete API Coverage**: Access to all RAWG API endpoints (games, platforms, genres, stores, creators, and more)
 - 🔒 **Type-Safe**: Fully typed responses with Codable models and compile-time safe query filters
 - ⚡ **Modern Swift**: Built with async/await and AsyncSequence for clean, readable asynchronous code
@@ -25,9 +27,9 @@ A modern, Swift-native SDK for the RAWG Video Games Database API.
 
 ## Requirements
 
-- Swift 5.9+
+- Swift 6.0+
 - iOS 15.0+ / macOS 13.0+ / watchOS 8.0+ / tvOS 15.0+ / visionOS 1.0+
-- Xcode 15.0+
+- Xcode 16.0+
 
 ## Installation
 
@@ -83,6 +85,42 @@ for screenshot in screenshots.results {
     print(screenshot.image)
 }
 ```
+
+### SwiftUI Integration
+
+RAWGKit provides ready-to-use SwiftUI components and ViewModels:
+
+```swift
+import RAWGKit
+import SwiftUI
+
+struct GamesListView: View {
+    @StateObject private var viewModel = GamesViewModel(
+        client: RAWGClient(apiKey: "your-api-key")
+    )
+    
+    var body: some View {
+        List(viewModel.games) { game in
+            GameRowView(game: game) // Pre-built component
+        }
+        .searchable(text: $viewModel.searchText)
+        .refreshable {
+            await viewModel.loadGames()
+        }
+        .task {
+            await viewModel.loadGames()
+        }
+    }
+}
+```
+
+**Included Components:**
+- `GamesViewModel` - Observable state management with search, filters, and pagination
+- `GameRowView` - Pre-styled game list row
+- `GameImageView` - Async image loading with placeholder
+- `RatingBadgeView` - Color-coded rating display
+
+👉 **[See full SwiftUI demo app](Examples/RAWGKitDemo/)** with search, filters, and infinite scrolling.
 
 ## Advanced Usage
 
@@ -549,4 +587,4 @@ Check out the [Examples/](Examples/) directory for comprehensive usage examples:
 
 - 📚 [RAWG API Documentation](https://api.rawg.io/docs/)
 - 🐛 [Report Issues](https://github.com/pespinel/RAWGKit/issues)
-- 💬 [Discussions](https://github.com/pespinel/RAWGKit/discussions)
+- � [Feature Requests](https://github.com/pespinel/RAWGKit/issues/new/choose)
