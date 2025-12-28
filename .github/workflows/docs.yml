@@ -21,27 +21,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.0"
-
-      - name: Cache Swift packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            .build
-            ~/Library/Caches/org.swift.swiftpm
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
       - name: Build documentation
         run: |
-          swift package --allow-writing-to-directory ./docs \
-            generate-documentation --target RAWGKit \
+          xcodebuild docbuild \
+            -scheme RAWGKit \
+            -derivedDataPath /tmp/docbuild \
+            -destination 'generic/platform=iOS'
+
+      - name: Process DocC Archive
+        run: |
+          # Find the .doccarchive
+          DOCC_ARCHIVE=$(find /tmp/docbuild -name "*.doccarchive" | head -1)
+
+          # Convert to static site
+          xcrun docc process-archive transform-for-static-hosting \
+            "$DOCC_ARCHIVE" \
             --output-path ./docs \
-            --transform-for-static-hosting \
             --hosting-base-path RAWGKit
 
       - name: Upload artifact
