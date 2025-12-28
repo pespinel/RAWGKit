@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Security scanning in CI/CD pipeline
   - Gitleaks for secret detection and API key exposure prevention
-  - CodeQL for Swift code security analysis
-  - Runs on all pull requests and main branch pushes
+  - Runs automatically on all pull requests and main branch pushes
+  - CodeQL for Swift code security analysis (manual trigger only)
 - Quality gates for code standards enforcement
   - All PRs must pass SwiftLint strict mode
   - All PRs must pass SwiftFormat validation
