@@ -50,18 +50,98 @@ public actor RAWGClient {
     /// Network manager handling HTTP requests and caching.
     private let networkManager: NetworkManager
 
-    /// Creates a new RAWG API client.
+    /// Creates a new RAWG API client with an API key.
     ///
     /// - Parameters:
     ///   - apiKey: Your RAWG API key. Required for all API requests.
     ///   - baseURL: Base URL for the API. Defaults to the official RAWG API endpoint.
     ///   - cacheEnabled: Whether to enable HTTP response caching. Defaults to `true`.
     ///
-    /// - Important: Keep your API key secure and never commit it to version control.
+    /// - Important: For production apps, consider using `initWithKeychain()` to load the API key
+    ///   from secure Keychain storage instead of passing it directly.
+    ///
+    /// ## Security Recommendation
+    ///
+    /// Store your API key in the Keychain:
+    /// ```swift
+    /// // One-time setup
+    /// try await KeychainManager.shared.saveAPIKey("your-api-key")
+    ///
+    /// // Use in your app
+    /// let client = try await RAWGClient.initWithKeychain()
+    /// ```
     public init(apiKey: String, baseURL: String = "https://api.rawg.io/api", cacheEnabled: Bool = true) {
         self.apiKey = apiKey
         self.baseURL = baseURL
         self.networkManager = NetworkManager(cacheEnabled: cacheEnabled)
+    }
+
+    /// Creates a new RAWG API client using an API key from the Keychain.
+    ///
+    /// This initializer loads the API key from secure Keychain storage, which is the
+    /// recommended approach for production apps to avoid exposing credentials in code.
+    ///
+    /// - Parameters:
+    ///   - baseURL: Base URL for the API. Defaults to the official RAWG API endpoint.
+    ///   - cacheEnabled: Whether to enable HTTP response caching. Defaults to `true`.
+    ///
+    /// - Returns: A configured `RAWGClient` instance
+    /// - Throws: `KeychainError` if the API key cannot be loaded from the Keychain
+    ///
+    /// ## Usage
+    ///
+    /// ```swift
+    /// // First, save your API key to the Keychain (one-time setup)
+    /// try await KeychainManager.shared.saveAPIKey("your-api-key-here")
+    ///
+    /// // Then create the client using the stored key
+    /// let client = try await RAWGClient.initWithKeychain()
+    /// let games = try await client.fetchGames()
+    /// ```
+    ///
+    /// - Note: Ensure you've saved an API key to the Keychain before calling this method.
+    public static func initWithKeychain(
+        baseURL: String = "https://api.rawg.io/api",
+        cacheEnabled: Bool = true
+    ) async throws -> RAWGClient {
+        let apiKey = try await KeychainManager.shared.loadAPIKey()
+        return RAWGClient(apiKey: apiKey, baseURL: baseURL, cacheEnabled: cacheEnabled)
+    }
+
+    /// Saves an API key to the Keychain for future use.
+    ///
+    /// This is a convenience method that delegates to `KeychainManager.shared.saveAPIKey(_:)`.
+    ///
+    /// - Parameter apiKey: The API key to store securely
+    /// - Throws: `KeychainError` if the save operation fails
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// // Save the API key (typically done during app setup)
+    /// try await RAWGClient.saveAPIKeyToKeychain("your-api-key-here")
+    ///
+    /// // Later, create a client using the saved key
+    /// let client = try await RAWGClient.initWithKeychain()
+    /// ```
+    public static func saveAPIKeyToKeychain(_ apiKey: String) async throws {
+        try await KeychainManager.shared.saveAPIKey(apiKey)
+    }
+
+    /// Deletes the stored API key from the Keychain.
+    ///
+    /// This is a convenience method that delegates to `KeychainManager.shared.deleteAPIKey()`.
+    ///
+    /// - Throws: `KeychainError` if the deletion fails
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// // Remove the API key (e.g., when user logs out)
+    /// try await RAWGClient.deleteAPIKeyFromKeychain()
+    /// ```
+    public static func deleteAPIKeyFromKeychain() async throws {
+        try await KeychainManager.shared.deleteAPIKey()
     }
 
     // MARK: - Cache Control
