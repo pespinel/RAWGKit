@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Call verification and tracking
   - Customizable network delays simulation
   - 15 comprehensive unit tests demonstrating usage
+- Security scanning in CI/CD pipeline
+  - Gitleaks for secret detection and API key exposure prevention
+  - CodeQL for Swift code security analysis
+  - Runs on all pull requests and main branch pushes
 
 ### Changed
 - `CacheManager` refactored to pure actor architecture
