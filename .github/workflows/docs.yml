@@ -32,8 +32,7 @@ jobs:
           # Convert to static site
           xcrun docc process-archive transform-for-static-hosting \
             "$DOCC_ARCHIVE" \
-            --output-path ./docs \
-            --hosting-base-path RAWGKit
+            --output-path ./docs
 
           # Fix paths for GitHub Pages subdirectory hosting
           # Convert absolute paths to include repository name
