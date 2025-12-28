@@ -33,7 +33,7 @@ import os.log
 ///
 /// - Note: This actor uses `URLSession` for HTTP requests and `NSCache` for caching.
 ///   All network operations are performed asynchronously and can throw `NetworkError`.
-actor NetworkManager {
+actor NetworkManager: NetworkManaging {
     private let session: URLSession
     private let decoder: JSONDecoder
     private let cache: CacheManager

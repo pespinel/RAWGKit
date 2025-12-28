@@ -48,7 +48,7 @@ public actor RAWGClient {
     private let baseURL: String
 
     /// Network manager handling HTTP requests and caching.
-    private let networkManager: NetworkManager
+    private let networkManager: any NetworkManaging
 
     /// Creates a new RAWG API client with an API key.
     ///
@@ -56,6 +56,8 @@ public actor RAWGClient {
     ///   - apiKey: Your RAWG API key. Required for all API requests.
     ///   - baseURL: Base URL for the API. Defaults to the official RAWG API endpoint.
     ///   - cacheEnabled: Whether to enable HTTP response caching. Defaults to `true`.
+    ///   - networkManager: Custom network manager for dependency injection. If `nil`, creates
+    ///     a default `NetworkManager` with the provided cache settings.
     ///
     /// - Important: For production apps, consider using `initWithKeychain()` to load the API key
     ///   from secure Keychain storage instead of passing it directly.
@@ -70,10 +72,23 @@ public actor RAWGClient {
     /// // Use in your app
     /// let client = try await RAWGClient.initWithKeychain()
     /// ```
-    public init(apiKey: String, baseURL: String = "https://api.rawg.io/api", cacheEnabled: Bool = true) {
+    ///
+    /// ## Dependency Injection
+    ///
+    /// For testing, you can inject a mock network manager:
+    /// ```swift
+    /// let mockManager = MockNetworkManager()
+    /// let client = RAWGClient(apiKey: "test", networkManager: mockManager)
+    /// ```
+    public init(
+        apiKey: String,
+        baseURL: String = "https://api.rawg.io/api",
+        cacheEnabled: Bool = true,
+        networkManager: (any NetworkManaging)? = nil
+    ) {
         self.apiKey = apiKey
         self.baseURL = baseURL
-        self.networkManager = NetworkManager(cacheEnabled: cacheEnabled)
+        self.networkManager = networkManager ?? NetworkManager(cacheEnabled: cacheEnabled)
     }
 
     /// Creates a new RAWG API client using an API key from the Keychain.
