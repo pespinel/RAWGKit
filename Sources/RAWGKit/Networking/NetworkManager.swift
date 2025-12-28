@@ -70,6 +70,11 @@ actor NetworkManager: NetworkManaging {
             configuration.urlCache = nil // We use our own CacheManager
             configuration.timeoutIntervalForRequest = requestTimeout
 
+            // Enforce TLS 1.2 or higher for secure connections
+            // TLS 1.0 and 1.1 are deprecated and considered insecure
+            configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
+            configuration.tlsMaximumSupportedProtocolVersion = .TLSv13
+
             // Create session with certificate pinning delegate if configured
             if let pinning = certificatePinning {
                 let delegate = CertificatePinningDelegate(certificatePinning: pinning)

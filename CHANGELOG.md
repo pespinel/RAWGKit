@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Certificate pinning for enhanced network security
+  - `CertificatePinning` actor for SSL/TLS certificate validation
+  - `CertificatePinningDelegate` for URLSession integration
+  - Domain-based public key pinning with SHA-256 hashes
+  - Strict and non-strict validation modes
+  - 12 comprehensive unit tests for certificate pinning
+- `NetworkManaging` protocol for dependency injection
+  - Protocol abstraction enabling mock implementations for testing
+  - RAWGClient now accepts custom network managers
+  - Default extension providing convenience methods
+
+### Changed
+- `CacheManager` refactored to pure actor architecture
+  - Removed manual locking (NSLock) in favor of actor isolation
+  - All cache operations now use async/await
+  - Thread-safe by design with Swift 6.0 strict concurrency
+- Updated test count from 389 to 401 passing tests
+
+### Security
+- TLS version enforcement (TLS 1.2+ only)
+  - NetworkManager now enforces minimum TLS 1.2, maximum TLS 1.3
+  - Rejects connections using deprecated TLS 1.0/1.1
+  - Mitigates protocol downgrade attacks
+- Enhanced network security with certificate pinning
+  - Prevents man-in-the-middle attacks
+  - Validates server certificates against pinned public keys
+  - Optional feature with flexible configuration
+
 ## [3.1]
 
 ### Added
