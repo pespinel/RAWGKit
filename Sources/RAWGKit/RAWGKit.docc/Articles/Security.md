@@ -16,7 +16,7 @@ Never hardcode API keys in your app. Use the iOS Keychain for secure storage:
 import RAWGKit
 
 // Save API key to Keychain
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 try await client.saveAPIKeyToKeychain()
 
 // Later, initialize from Keychain
@@ -45,7 +45,7 @@ The ``KeychainManager`` provides thread-safe Keychain operations:
 
 ```swift
 // Save to Keychain
-try await KeychainManager.shared.save("your-api-key", forKey: "rawg_api_key")
+try await KeychainManager.shared.save("YOUR_API_KEY_HERE", forKey: "rawg_api_key")
 
 // Load from Keychain
 let apiKey = try await KeychainManager.shared.load(forKey: "rawg_api_key")
@@ -81,7 +81,7 @@ await pinning.addPin(
 
 // Create network manager with pinning
 let networkManager = NetworkManager(
-    apiKey: "your-api-key",
+    apiKey: "YOUR_API_KEY_HERE",
     certificatePinning: pinning
 )
 
@@ -161,7 +161,7 @@ This is configured automatically and requires no additional setup:
 
 ```swift
 // TLS enforcement is automatic
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 
 // All connections use TLS 1.2 or 1.3 only
 let games = try await client.fetchGames()
@@ -311,7 +311,7 @@ Before deploying to production:
 
 ```swift
 // BAD: API key in source code
-let client = RAWGClient(apiKey: "sk_live_1234567890abcdef")
+let client = RAWGClient(apiKey: "hardcoded_api_key_here")
 ```
 
 ```swift

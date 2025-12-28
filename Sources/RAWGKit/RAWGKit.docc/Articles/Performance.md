@@ -22,11 +22,11 @@ RAWGKit includes an intelligent caching system that significantly reduces API ca
 
 ```swift
 // Default: Caching enabled with NSCache
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 
 // Disable caching if needed (not recommended)
 let noCacheClient = RAWGClient(
-    apiKey: "your-api-key",
+    apiKey: "YOUR_API_KEY_HERE",
     cacheEnabled: false
 )
 ```
@@ -179,7 +179,7 @@ Configure retries for optimal performance vs reliability balance.
 
 ```swift
 // Default: 3 retries, exponential backoff (1s, 2s, 4s)
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 ```
 
 ### Custom Retry Policies
@@ -231,7 +231,7 @@ config.timeoutIntervalForResource = 120 // Default: 604800s (7 days)
 
 let session = URLSession(configuration: config)
 let networkManager = NetworkManager(
-    apiKey: "your-api-key",
+    apiKey: "YOUR_API_KEY_HERE",
     session: session
 )
 ```
@@ -344,7 +344,7 @@ RAWGKit uses Swift actors for thread-safe, high-performance concurrent operation
 ```swift
 // NetworkManager is an actor
 // All methods are async and actor-isolated
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 
 // Safe concurrent access
 Task {

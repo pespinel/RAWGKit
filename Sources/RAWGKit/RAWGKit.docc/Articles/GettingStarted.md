@@ -39,7 +39,7 @@ For maximum security, store your API key in the iOS Keychain:
 import RAWGKit
 
 // Initialize client and save API key to Keychain
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 try await client.saveAPIKeyToKeychain()
 
 // Later, initialize client from Keychain
@@ -54,7 +54,7 @@ let client = try await RAWGClient.initWithKeychain()
 import RAWGKit
 
 // Initialize with API key
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 
 // Or initialize from Keychain
 let client = try await RAWGClient.initWithKeychain()

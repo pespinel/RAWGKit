@@ -18,7 +18,7 @@ import SwiftUI
 
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel(
-        client: RAWGClient(apiKey: "your-api-key")
+        client: RAWGClient(apiKey: "YOUR_API_KEY_HERE")
     )
 
     var body: some View {
@@ -54,7 +54,7 @@ The ``GamesViewModel`` includes:
 ```swift
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel(
-        client: RAWGClient(apiKey: "your-api-key")
+        client: RAWGClient(apiKey: "YOUR_API_KEY_HERE")
     )
 
     var body: some View {
@@ -218,7 +218,7 @@ import SwiftUI
 
 struct GamesListView: View {
     @StateObject private var viewModel = GamesViewModel(
-        client: RAWGClient(apiKey: "your-api-key")
+        client: RAWGClient(apiKey: "YOUR_API_KEY_HERE")
     )
 
     var body: some View {

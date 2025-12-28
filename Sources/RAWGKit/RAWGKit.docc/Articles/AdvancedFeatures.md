@@ -218,11 +218,11 @@ RAWGKit includes intelligent caching to reduce API calls and improve performance
 
 ```swift
 // Caching is enabled by default
-let client = RAWGClient(apiKey: "your-api-key")
+let client = RAWGClient(apiKey: "YOUR_API_KEY_HERE")
 
 // Disable caching if needed
 let noCacheClient = RAWGClient(
-    apiKey: "your-api-key",
+    apiKey: "YOUR_API_KEY_HERE",
     cacheEnabled: false
 )
 ```
@@ -262,7 +262,7 @@ config.timeoutIntervalForResource = 120
 
 let session = URLSession(configuration: config)
 let networkManager = NetworkManager(
-    apiKey: "your-api-key",
+    apiKey: "YOUR_API_KEY_HERE",
     session: session
 )
 
@@ -308,7 +308,7 @@ let customPolicy = RetryPolicy(
 )
 
 let networkManager = NetworkManager(
-    apiKey: "your-api-key",
+    apiKey: "YOUR_API_KEY_HERE",
     retryPolicy: customPolicy
 )
 
