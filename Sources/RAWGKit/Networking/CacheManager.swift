@@ -5,10 +5,12 @@
 
 import Foundation
 
-/// In-memory cache for API responses using NSCache for automatic memory management
-public final class CacheManager: @unchecked Sendable {
+/// In-memory cache for API responses using NSCache for automatic memory management.
+///
+/// `CacheManager` is an actor that provides thread-safe caching with automatic memory management
+/// and TTL-based expiration. Actor isolation ensures safe concurrent access without manual locking.
+public actor CacheManager {
     private let cache = NSCache<NSString, CacheEntry>()
-    private let lock = NSLock()
     private var keys = Set<String>()
     private let defaultTTL: TimeInterval
 
@@ -55,9 +57,7 @@ public final class CacheManager: @unchecked Sendable {
 
         if entry.isExpired {
             cache.removeObject(forKey: key)
-            lock.lock()
             keys.remove(url.absoluteString)
-            lock.unlock()
             return nil
         }
 
@@ -75,42 +75,31 @@ public final class CacheManager: @unchecked Sendable {
 
         // Use data size as cost for memory-based eviction
         cache.setObject(entry, forKey: key, cost: data.count)
-
-        lock.lock()
         keys.insert(url.absoluteString)
-        lock.unlock()
     }
 
     /// Clear all cached data
     public func clear() {
         cache.removeAllObjects()
-        lock.lock()
         keys.removeAll()
-        lock.unlock()
     }
 
     /// Remove expired entries
     public func cleanExpired() {
-        lock.lock()
         let currentKeys = keys
-        lock.unlock()
 
         for keyString in currentKeys {
             let key = keyString as NSString
             if let entry = cache.object(forKey: key), entry.isExpired {
                 cache.removeObject(forKey: key)
-                lock.lock()
                 keys.remove(keyString)
-                lock.unlock()
             }
         }
     }
 
     /// Get cache statistics
     public var stats: CacheStats {
-        lock.lock()
         let currentKeys = keys
-        lock.unlock()
 
         var validCount = 0
         var expiredCount = 0

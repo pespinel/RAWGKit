@@ -12,17 +12,17 @@ import Testing
 @Suite("Performance Tests")
 struct PerformanceTests {
     @Test("Cache operations should be fast (<5ms)")
-    func cachePerformance() {
+    func cachePerformance() async {
         let cacheManager = CacheManager()
         let testURL = URL(string: "https://api.rawg.io/api/games/1")!
         let data = Data("Test data".utf8)
 
         // Prime the cache
-        cacheManager.set(data, for: testURL)
+        await cacheManager.set(data, for: testURL)
 
         // Measure cache retrieval time
         let start = CFAbsoluteTimeGetCurrent()
-        let cachedData = cacheManager.get(for: testURL)
+        let cachedData = await cacheManager.get(for: testURL)
         let duration = (CFAbsoluteTimeGetCurrent() - start) * 1000 // Convert to ms
 
         #expect(cachedData != nil)
@@ -30,9 +30,9 @@ struct PerformanceTests {
     }
 
     @Test("Memory cache should handle large datasets efficiently")
-    func memoryCacheEfficiency() {
+    func memoryCacheEfficiency() async {
         let cacheManager = CacheManager()
-        cacheManager.clear()
+        await cacheManager.clear()
 
         // Create 100 cache entries
         let entries = 100
@@ -43,15 +43,18 @@ struct PerformanceTests {
             urls.append(url)
 
             let data = Data("Game \(index)".utf8)
-            cacheManager.set(data, for: url)
+            await cacheManager.set(data, for: url)
         }
 
         // Measure retrieval time for cached entries
         let start = CFAbsoluteTimeGetCurrent()
 
         var hitCount = 0
-        for url in urls where cacheManager.get(for: url) != nil {
-            hitCount += 1
+        for url in urls {
+            let cachedData = await cacheManager.get(for: url)
+            if cachedData != nil {
+                hitCount += 1
+            }
         }
 
         let duration = (CFAbsoluteTimeGetCurrent() - start) * 1000
@@ -114,19 +117,19 @@ struct PerformanceTests {
     }
 
     @Test("Cache statistics should be efficient to calculate")
-    func cacheStatsPerformance() {
+    func cacheStatsPerformance() async {
         let cacheManager = CacheManager()
 
         // Add multiple entries
         for index in 0 ..< 50 {
             let url = URL(string: "https://api.rawg.io/api/games/\(index)")!
             let data = Data("Data \(index)".utf8)
-            cacheManager.set(data, for: url)
+            await cacheManager.set(data, for: url)
         }
 
         // Measure stats calculation time
         let start = CFAbsoluteTimeGetCurrent()
-        let stats = cacheManager.stats
+        let stats = await cacheManager.stats
         let duration = (CFAbsoluteTimeGetCurrent() - start) * 1000
 
         #expect(stats.totalEntries > 0)

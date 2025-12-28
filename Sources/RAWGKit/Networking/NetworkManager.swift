@@ -74,7 +74,7 @@ actor NetworkManager {
     /// Fetches and decodes data from a URL with optional caching
     func fetch<T: Decodable>(from url: URL, as _: T.Type, useCache: Bool = true) async throws -> T {
         // Check cache first
-        if cacheEnabled, useCache, let cachedData = cache.get(for: url) {
+        if cacheEnabled, useCache, let cachedData = await cache.get(for: url) {
             do {
                 return try decoder.decode(T.self, from: cachedData)
             } catch {
@@ -143,7 +143,7 @@ actor NetworkManager {
         do {
             let data = try await task.value
             activeTasks.removeValue(forKey: url)
-            return try decodeAndCache(data, for: url, useCache: useCache)
+            return try await decodeAndCache(data, for: url, useCache: useCache)
         } catch let error as NetworkError {
             activeTasks.removeValue(forKey: url)
             throw error
@@ -183,11 +183,11 @@ actor NetworkManager {
     }
 
     /// Decode data and cache if enabled
-    private func decodeAndCache<T: Decodable>(_ data: Data, for url: URL, useCache: Bool) throws -> T {
+    private func decodeAndCache<T: Decodable>(_ data: Data, for url: URL, useCache: Bool) async throws -> T {
         do {
             let decoded = try decoder.decode(T.self, from: data)
             if cacheEnabled, useCache {
-                cache.set(data, for: url)
+                await cache.set(data, for: url)
             }
             return decoded
         } catch {
@@ -226,13 +226,13 @@ actor NetworkManager {
     }
 
     /// Clear cache
-    func clearCache() {
-        cache.clear()
+    func clearCache() async {
+        await cache.clear()
     }
 
     /// Get cache statistics
-    func cacheStats() -> CacheManager.CacheStats {
-        cache.stats
+    func cacheStats() async -> CacheManager.CacheStats {
+        await cache.stats
     }
 
     /// Builds a URL with query parameters
