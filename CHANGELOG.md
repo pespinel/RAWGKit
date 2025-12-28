@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3]
+
 ### Added
 - Security scanning in CI/CD pipeline
   - Gitleaks for secret detection and API key exposure prevention
