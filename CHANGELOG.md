@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Security scanning in CI/CD pipeline
+  - Gitleaks for secret detection and API key exposure prevention
+  - CodeQL for Swift code security analysis
+  - Runs on all pull requests and main branch pushes
+- Quality gates for code standards enforcement
+  - All PRs must pass SwiftLint strict mode
+  - All PRs must pass SwiftFormat validation
+  - All tests must pass on macOS
+  - Code coverage must be successfully generated
+  - Consolidated quality gate job validates all checks
+
+### Fixed
+- iOS 15 compatibility in tests by using `Task.sleep(nanoseconds:)` instead of `Task.sleep(for:)`
+
 ## [3.2]
 
 ### Added
@@ -27,16 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Call verification and tracking
   - Customizable network delays simulation
   - 15 comprehensive unit tests demonstrating usage
-- Security scanning in CI/CD pipeline
-  - Gitleaks for secret detection and API key exposure prevention
-  - CodeQL for Swift code security analysis
-  - Runs on all pull requests and main branch pushes
-- Quality gates for code standards enforcement
-  - All PRs must pass SwiftLint strict mode
-  - All PRs must pass SwiftFormat validation
-  - All tests must pass on macOS
-  - Code coverage must be successfully generated
-  - Consolidated quality gate job validates all checks
 
 ### Changed
 - `CacheManager` refactored to pure actor architecture
