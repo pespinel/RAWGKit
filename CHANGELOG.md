@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Advanced Features guide covering query builder and pagination
   - Security guide for API keys, certificate pinning, and TLS enforcement
   - Performance guide with optimization techniques and best practices
+- GitHub Pages documentation hosting
+  - Automatic documentation generation on main branch pushes
+  - Static hosting at https://pespinel.github.io/RAWGKit/
+  - Swift-DocC plugin integration for HTML generation
 
 ### Fixed
 - iOS 15 compatibility in tests by using `Task.sleep(nanoseconds:)` instead of `Task.sleep(for:)`
