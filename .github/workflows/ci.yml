@@ -107,3 +107,10 @@ jobs:
           echo "Coverage file: coverage.lcov"
           lines=$(grep -c "^SF:" coverage.lcov || echo "0")
           echo "Files covered: $lines"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.lcov
+          fail_ci_if_error: true
+          verbose: true
