@@ -40,7 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced MockNetworkManager with flexible URL matching
   - Order-independent query parameter comparison
   - Automatic fallback to component-based matching when exact match fails
-- Updated test count from 389 to 410 passing tests
+- Updated test count from 389 to 421 passing tests
+- Added 11 SwiftUI compilation tests
+  - Tests verify component compilation on supported platforms
+  - Workaround for Swift Testing @available limitations using MainActor.run
+  - Comprehensive UI testing conducted through RAWGKitDemo app
+  - Tests cover GameImageView, RatingBadgeView, GameRowView, and View+Loading extensions
 
 ### Security
 - TLS version enforcement (TLS 1.2+ only)
