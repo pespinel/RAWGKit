@@ -33,6 +33,7 @@
 # Rules to disable
 --disable redundantSelf
 --disable wrapMultilineStatementBraces
+--disable modifierOrder
 
 # Swift version
 --swiftversion 5.9

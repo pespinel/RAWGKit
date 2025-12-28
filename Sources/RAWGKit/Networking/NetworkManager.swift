@@ -39,6 +39,7 @@ actor NetworkManager: NetworkManaging {
     private let cache: CacheManager
     private let cacheEnabled: Bool
     private let retryPolicy: RetryPolicy?
+    private let certificatePinning: CertificatePinning?
     private var activeTasks: [URL: Task<Data, any Error>] = [:]
 
     /// Creates a new NetworkManager instance.
@@ -49,12 +50,18 @@ actor NetworkManager: NetworkManaging {
     ///   - cacheEnabled: Whether to use in-memory caching (default: true)
     ///   - retryPolicy: Policy for retrying failed requests (default: 3 retries with exponential backoff)
     ///   - requestTimeout: Timeout for requests in seconds (default: 30)
+    ///   - certificatePinning: Optional certificate pinning for enhanced security.
+    ///     When provided, the network manager will validate server certificates against
+    ///     the pinned public keys to prevent man-in-the-middle attacks.
     init(
         session: URLSession? = nil,
         cacheEnabled: Bool = true,
         retryPolicy: RetryPolicy? = RetryPolicy(),
-        requestTimeout: TimeInterval = RAWGConstants.defaultRequestTimeout
+        requestTimeout: TimeInterval = RAWGConstants.defaultRequestTimeout,
+        certificatePinning: CertificatePinning? = nil
     ) {
+        self.certificatePinning = certificatePinning
+
         if let session {
             self.session = session
         } else {
@@ -62,7 +69,18 @@ actor NetworkManager: NetworkManaging {
             configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
             configuration.urlCache = nil // We use our own CacheManager
             configuration.timeoutIntervalForRequest = requestTimeout
-            self.session = URLSession(configuration: configuration)
+
+            // Create session with certificate pinning delegate if configured
+            if let pinning = certificatePinning {
+                let delegate = CertificatePinningDelegate(certificatePinning: pinning)
+                self.session = URLSession(
+                    configuration: configuration,
+                    delegate: delegate,
+                    delegateQueue: nil
+                )
+            } else {
+                self.session = URLSession(configuration: configuration)
+            }
         }
 
         self.decoder = JSONDecoder()
