@@ -37,7 +37,7 @@ public actor MockNetworkManager: NetworkManaging {
     public var mockResponses: [String: Data] = [:]
 
     /// Dictionary mapping URLs to errors to throw
-    public var mockErrors: [String: Error] = [:]
+    public var mockErrors: [String: any Error] = [:]
 
     /// Simulated network delay in seconds (default: 0)
     public var simulatedDelay: TimeInterval = 0
@@ -89,6 +89,7 @@ public actor MockNetworkManager: NetworkManaging {
             try await Task.sleep(nanoseconds: UInt64(simulatedDelay * 1_000_000_000))
         }
 
+        // Try exact match first
         let urlString = url.absoluteString
 
         // Check for configured error
@@ -97,16 +98,97 @@ public actor MockNetworkManager: NetworkManaging {
         }
 
         // Check for configured response
-        guard let data = mockResponses[urlString] else {
-            throw NetworkError.notFound
+        if let data = mockResponses[urlString] {
+            do {
+                return try JSONDecoder().decode(T.self, from: data)
+            } catch {
+                throw NetworkError.decodingError
+            }
         }
 
-        // Decode and return
-        do {
-            return try JSONDecoder().decode(T.self, from: data)
-        } catch {
-            throw NetworkError.decodingError
+        // Try flexible matching by comparing URL components (path + sorted query items)
+        if let matchedData = try? findMatchingResponse(for: url) {
+            do {
+                return try JSONDecoder().decode(T.self, from: matchedData)
+            } catch {
+                throw NetworkError.decodingError
+            }
         }
+
+        // Try flexible error matching
+        if let matchedError = try? findMatchingError(for: url) {
+            throw matchedError
+        }
+
+        throw NetworkError.notFound
+    }
+
+    /// Finds a matching response by comparing URL components instead of exact string match
+    private func findMatchingResponse(for url: URL) throws -> Data? {
+        guard let targetComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+
+        for (mockURLString, data) in mockResponses {
+            guard let mockURL = URL(string: mockURLString),
+                  let mockComponents = URLComponents(url: mockURL, resolvingAgainstBaseURL: false) else {
+                continue
+            }
+
+            // Compare scheme, host, and path
+            guard targetComponents.scheme == mockComponents.scheme,
+                  targetComponents.host == mockComponents.host,
+                  targetComponents.path == mockComponents.path else {
+                continue
+            }
+
+            // Compare query items (order-independent)
+            if queryItemsMatch(targetComponents.queryItems, mockComponents.queryItems) {
+                return data
+            }
+        }
+
+        return nil
+    }
+
+    /// Finds a matching error by comparing URL components instead of exact string match
+    private func findMatchingError(for url: URL) throws -> (any Error)? {
+        guard let targetComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+
+        for (mockURLString, error) in mockErrors {
+            guard let mockURL = URL(string: mockURLString),
+                  let mockComponents = URLComponents(url: mockURL, resolvingAgainstBaseURL: false) else {
+                continue
+            }
+
+            // Compare scheme, host, and path
+            guard targetComponents.scheme == mockComponents.scheme,
+                  targetComponents.host == mockComponents.host,
+                  targetComponents.path == mockComponents.path else {
+                continue
+            }
+
+            // Compare query items (order-independent)
+            if queryItemsMatch(targetComponents.queryItems, mockComponents.queryItems) {
+                return error
+            }
+        }
+
+        return nil
+    }
+
+    /// Compares two sets of query items in an order-independent way
+    private func queryItemsMatch(_ items1: [URLQueryItem]?, _ items2: [URLQueryItem]?) -> Bool {
+        struct QueryItemPair: Hashable {
+            let name: String
+            let value: String
+        }
+
+        let set1 = Set((items1 ?? []).map { QueryItemPair(name: $0.name, value: $0.value ?? "") })
+        let set2 = Set((items2 ?? []).map { QueryItemPair(name: $0.name, value: $0.value ?? "") })
+        return set1 == set2
     }
 
     public func cancelAllRequests() {
@@ -185,7 +267,7 @@ public actor MockNetworkManager: NetworkManaging {
     /// - Parameters:
     ///   - error: The error to throw
     ///   - url: The URL to match
-    public func setMockError(_ error: Error, for url: String) {
+    public func setMockError(_ error: any Error, for url: String) {
         mockErrors[url] = error
     }
 

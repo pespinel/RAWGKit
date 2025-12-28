@@ -33,7 +33,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Thread-safe by design with Swift 6.0 strict concurrency
 - Removed old incomplete MockNetworkManager from RAWGClientTests
   - Replaced with comprehensive MockNetworkManager in Mocks/ directory
-- Updated test count from 389 to 416 passing tests
+- Refactored RAWGClient tests into 7 focused modules for better organization
+  - Split 571-line file into modular test suites
+  - Each suite focuses on specific functionality (initialization, games, resources, errors, validation, cache, multiple calls)
+  - Improved test maintainability and compliance with SwiftLint
+- Enhanced MockNetworkManager with flexible URL matching
+  - Order-independent query parameter comparison
+  - Automatic fallback to component-based matching when exact match fails
+- Updated test count from 389 to 410 passing tests
 
 ### Security
 - TLS version enforcement (TLS 1.2+ only)
