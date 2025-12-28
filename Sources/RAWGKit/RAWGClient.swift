@@ -164,39 +164,28 @@ public actor RAWGClient {
         excludeParents: Bool? = nil,
         excludeGameSeries: Bool? = nil
     ) async throws -> GamesResponse {
-        var queryItems: [String: String] = [
-            "key": apiKey,
-            "page": String(page),
-            "page_size": String(min(pageSize, RAWGConstants.maxPageSize)),
-        ]
-        if let search, !search.isEmpty { queryItems["search"] = search }
-        if let searchPrecise { queryItems["search_precise"] = String(searchPrecise) }
-        if let searchExact { queryItems["search_exact"] = String(searchExact) }
-        if let ordering { queryItems["ordering"] = ordering }
-        if let platforms, !platforms.isEmpty {
-            queryItems["platforms"] = platforms.map(String.init).joined(separator: ",")
-        }
-        if let parentPlatforms, !parentPlatforms.isEmpty {
-            queryItems["parent_platforms"] = parentPlatforms.map(String.init).joined(separator: ",")
-        }
-        if let genres, !genres.isEmpty {
-            queryItems["genres"] = genres.map(String.init).joined(separator: ",")
-        }
-        if let tags, !tags.isEmpty {
-            queryItems["tags"] = tags.map(String.init).joined(separator: ",")
-        }
-        if let developers, !developers.isEmpty { queryItems["developers"] = developers }
-        if let publishers, !publishers.isEmpty { queryItems["publishers"] = publishers }
-        if let stores, !stores.isEmpty {
-            queryItems["stores"] = stores.map(String.init).joined(separator: ",")
-        }
-        if let creators, !creators.isEmpty { queryItems["creators"] = creators }
-        if let dates, !dates.isEmpty { queryItems["dates"] = dates }
-        if let updated, !updated.isEmpty { queryItems["updated"] = updated }
-        if let metacritic, !metacritic.isEmpty { queryItems["metacritic"] = metacritic }
-        if let excludeAdditions { queryItems["exclude_additions"] = String(excludeAdditions) }
-        if let excludeParents { queryItems["exclude_parents"] = String(excludeParents) }
-        if let excludeGameSeries { queryItems["exclude_game_series"] = String(excludeGameSeries) }
+        let queryItems = try buildGamesQueryItems(
+            page: page,
+            pageSize: pageSize,
+            search: search,
+            searchPrecise: searchPrecise,
+            searchExact: searchExact,
+            ordering: ordering,
+            platforms: platforms,
+            parentPlatforms: parentPlatforms,
+            genres: genres,
+            tags: tags,
+            developers: developers,
+            publishers: publishers,
+            stores: stores,
+            creators: creators,
+            dates: dates,
+            updated: updated,
+            metacritic: metacritic,
+            excludeAdditions: excludeAdditions,
+            excludeParents: excludeParents,
+            excludeGameSeries: excludeGameSeries
+        )
 
         let url = try url(for: .games, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GamesResponse.self)
@@ -204,8 +193,9 @@ public actor RAWGClient {
 
     /// Fetches comprehensive game details including description, ratings, and metadata
     public func fetchGameDetail(id: Int) async throws -> GameDetail {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .game(id: id), queryItems: queryItems)
+        let url = try url(for: .game(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GameDetail.self)
     }
 
@@ -215,19 +205,24 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> ScreenshotsResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameScreenshots(id: id), queryItems: queryItems)
+        let url = try url(for: .gameScreenshots(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: ScreenshotsResponse.self)
     }
 
     /// Fetches trailers and gameplay videos for a game
     public func fetchGameMovies(id: Int) async throws -> RAWGResponse<Movie> {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .gameMovies(id: id), queryItems: queryItems)
+        let url = try url(for: .gameMovies(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: RAWGResponse<Movie>.self)
     }
 
@@ -237,12 +232,16 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> GamesResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameAdditions(id: id), queryItems: queryItems)
+        let url = try url(for: .gameAdditions(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GamesResponse.self)
     }
 
@@ -252,12 +251,16 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> GamesResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameSeries(id: id), queryItems: queryItems)
+        let url = try url(for: .gameSeries(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GamesResponse.self)
     }
 
@@ -267,12 +270,16 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> GamesResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameParentGames(id: id), queryItems: queryItems)
+        let url = try url(for: .gameParentGames(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GamesResponse.self)
     }
 
@@ -282,12 +289,16 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> CreatorsResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameDevelopmentTeam(id: id), queryItems: queryItems)
+        let url = try url(for: .gameDevelopmentTeam(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: CreatorsResponse.self)
     }
 
@@ -297,26 +308,32 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> GameStoresResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameStores(id: id), queryItems: queryItems)
+        let url = try url(for: .gameStores(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GameStoresResponse.self)
     }
 
     /// Fetches achievements for a game
     public func fetchGameAchievements(id: Int) async throws -> RAWGResponse<Achievement> {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .gameAchievements(id: id), queryItems: queryItems)
+        let url = try url(for: .gameAchievements(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: RAWGResponse<Achievement>.self)
     }
 
     /// Fetches Reddit posts from the game's subreddit
     public func fetchGameRedditPosts(id: Int) async throws -> RedditPostsResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .gameReddit(id: id), queryItems: queryItems)
+        let url = try url(for: .gameReddit(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: RedditPostsResponse.self)
     }
 
@@ -326,12 +343,16 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> TwitchStreamsResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameTwitch(id: id), queryItems: queryItems)
+        let url = try url(for: .gameTwitch(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: TwitchStreamsResponse.self)
     }
 
@@ -341,27 +362,36 @@ public actor RAWGClient {
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> YouTubeVideosResponse {
+        let validatedID = try InputValidator.validateResourceID(id)
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
-        let url = try url(for: .gameYouTube(id: id), queryItems: queryItems)
+        let url = try url(for: .gameYouTube(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: YouTubeVideosResponse.self)
     }
+}
 
-    // MARK: - Genres
+// MARK: - Genres
 
+public extension RAWGClient {
     /// Fetches all game genres with metadata and game counts
-    public func fetchGenres(
+    func fetchGenres(
         page: Int = 1,
         pageSize: Int = 20,
         ordering: String? = nil
     ) async throws -> GenresResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         var queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
 
         if let ordering {
@@ -373,24 +403,30 @@ public actor RAWGClient {
     }
 
     /// Fetches detailed information for a specific genre by ID
-    public func fetchGenreDetails(id: Int) async throws -> GenreDetails {
+    func fetchGenreDetails(id: Int) async throws -> GenreDetails {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .genre(id: id), queryItems: queryItems)
+        let url = try url(for: .genre(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: GenreDetails.self)
     }
+}
 
-    // MARK: - Platforms
+// MARK: - Platforms
 
+public extension RAWGClient {
     /// Fetches all gaming platforms (consoles, PC, mobile) with metadata
-    public func fetchPlatforms(
+    func fetchPlatforms(
         page: Int = 1,
         pageSize: Int = 20,
         ordering: String? = nil
     ) async throws -> PlatformsResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         var queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
 
         if let ordering {
@@ -402,22 +438,26 @@ public actor RAWGClient {
     }
 
     /// Fetches detailed information for a specific platform by ID
-    public func fetchPlatformDetails(id: Int) async throws -> PlatformDetails {
+    func fetchPlatformDetails(id: Int) async throws -> PlatformDetails {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .platform(id: id), queryItems: queryItems)
+        let url = try url(for: .platform(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: PlatformDetails.self)
     }
 
     /// Fetches a list of parent platforms (e.g., PlayStation, Xbox, PC)
-    public func fetchParentPlatforms(
+    func fetchParentPlatforms(
         page: Int = 1,
         pageSize: Int = 20,
         ordering: String? = nil
     ) async throws -> ParentPlatformsResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         var queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
 
         if let ordering {
@@ -427,65 +467,82 @@ public actor RAWGClient {
         let url = try url(for: .parentPlatforms, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: ParentPlatformsResponse.self)
     }
+}
 
-    // MARK: - Developers
+// MARK: - Developers
 
+public extension RAWGClient {
     /// Fetches a paginated list of game developers
-    public func fetchDevelopers(
+    func fetchDevelopers(
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> DevelopersResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
         let url = try url(for: .developers, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: DevelopersResponse.self)
     }
 
     /// Fetches detailed information for a specific developer by ID
-    public func fetchDeveloperDetails(id: Int) async throws -> DeveloperDetails {
+    func fetchDeveloperDetails(id: Int) async throws -> DeveloperDetails {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .developer(id: id), queryItems: queryItems)
+        let url = try url(for: .developer(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: DeveloperDetails.self)
     }
+}
 
-    // MARK: - Publishers
+// MARK: - Publishers
 
+public extension RAWGClient {
     /// Fetches a paginated list of game publishers
-    public func fetchPublishers(
+    func fetchPublishers(
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> PublishersResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
         let url = try url(for: .publishers, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: PublishersResponse.self)
     }
 
     /// Fetches detailed information for a specific publisher by ID
-    public func fetchPublisherDetails(id: Int) async throws -> PublisherDetails {
+    func fetchPublisherDetails(id: Int) async throws -> PublisherDetails {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .publisher(id: id), queryItems: queryItems)
+        let url = try url(for: .publisher(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: PublisherDetails.self)
     }
+}
 
-    // MARK: - Stores
+// MARK: - Stores
 
+public extension RAWGClient {
     /// Fetches digital and physical stores (Steam, PlayStation Store, etc.)
-    public func fetchStores(
+    func fetchStores(
         page: Int = 1,
         pageSize: Int = 20,
         ordering: String? = nil
     ) async throws -> StoresResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         var queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
 
         if let ordering {
@@ -497,69 +554,193 @@ public actor RAWGClient {
     }
 
     /// Fetches detailed information for a specific store by ID
-    public func fetchStoreDetails(id: Int) async throws -> StoreDetails {
+    func fetchStoreDetails(id: Int) async throws -> StoreDetails {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .store(id: id), queryItems: queryItems)
+        let url = try url(for: .store(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: StoreDetails.self)
     }
+}
 
-    // MARK: - Tags
+// MARK: - Tags
 
+public extension RAWGClient {
     /// Fetches a paginated list of game tags
-    public func fetchTags(
+    func fetchTags(
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> TagsResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
         let url = try url(for: .tags, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: TagsResponse.self)
     }
 
     /// Fetches detailed information for a specific tag by ID
-    public func fetchTagDetails(id: Int) async throws -> TagDetails {
+    func fetchTagDetails(id: Int) async throws -> TagDetails {
+        let validatedID = try InputValidator.validateResourceID(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .tag(id: id), queryItems: queryItems)
+        let url = try url(for: .tag(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: TagDetails.self)
     }
+}
 
-    // MARK: - Creators
+// MARK: - Creators
 
+public extension RAWGClient {
     /// Fetches game creators, designers, and developers
-    public func fetchCreators(
+    func fetchCreators(
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> CreatorsResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
         let url = try url(for: .creators, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: CreatorsResponse.self)
     }
 
     /// Fetches detailed information for a specific creator by ID
-    public func fetchCreatorDetails(id: String) async throws -> CreatorDetails {
+    func fetchCreatorDetails(id: String) async throws -> CreatorDetails {
+        let validatedID = try InputValidator.validateSlug(id)
         let queryItems: [String: String] = ["key": apiKey]
-        let url = try url(for: .creator(id: id), queryItems: queryItems)
+        let url = try url(for: .creator(id: validatedID), queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: CreatorDetails.self)
     }
 
     /// Fetches a paginated list of creator roles and positions
-    public func fetchCreatorRoles(
+    func fetchCreatorRoles(
         page: Int = 1,
         pageSize: Int = 20
     ) async throws -> CreatorRolesResponse {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(pageSize)
+
         let queryItems: [String: String] = [
             "key": apiKey,
-            "page": String(page),
-            "page_size": String(pageSize),
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
         ]
         let url = try url(for: .creatorRoles, queryItems: queryItems)
         return try await networkManager.fetch(from: url, as: CreatorRolesResponse.self)
+    }
+}
+
+// MARK: - Private Helpers
+
+private extension RAWGClient {
+    // swiftlint:disable:next function_body_length cyclomatic_complexity function_parameter_count
+    func buildGamesQueryItems(
+        page: Int,
+        pageSize: Int,
+        search: String?,
+        searchPrecise: Bool?,
+        searchExact: Bool?,
+        ordering: String?,
+        platforms: [Int]?,
+        parentPlatforms: [Int]?,
+        genres: [Int]?,
+        tags: [Int]?,
+        developers: String?,
+        publishers: String?,
+        stores: [Int]?,
+        creators: String?,
+        dates: String?,
+        updated: String?,
+        metacritic: String?,
+        excludeAdditions: Bool?,
+        excludeParents: Bool?,
+        excludeGameSeries: Bool?
+    ) throws -> [String: String] {
+        let validatedPage = try InputValidator.validatePageNumber(page)
+        let validatedPageSize = try InputValidator.validatePageSize(min(pageSize, RAWGConstants.maxPageSize))
+
+        var queryItems: [String: String] = [
+            "key": apiKey,
+            "page": String(validatedPage),
+            "page_size": String(validatedPageSize),
+        ]
+
+        if let search, !search.isEmpty {
+            queryItems["search"] = try InputValidator.validateSearchQuery(search)
+        }
+        if let searchPrecise { queryItems["search_precise"] = String(searchPrecise) }
+        if let searchExact { queryItems["search_exact"] = String(searchExact) }
+        if let ordering { queryItems["ordering"] = ordering }
+
+        if let platforms, !platforms.isEmpty {
+            let validatedPlatforms = try InputValidator.validateIDArray(platforms)
+            queryItems["platforms"] = validatedPlatforms.map(String.init).joined(separator: ",")
+        }
+        if let parentPlatforms, !parentPlatforms.isEmpty {
+            let validatedParentPlatforms = try InputValidator.validateIDArray(parentPlatforms)
+            queryItems["parent_platforms"] = validatedParentPlatforms.map(String.init).joined(separator: ",")
+        }
+        if let genres, !genres.isEmpty {
+            let validatedGenres = try InputValidator.validateIDArray(genres)
+            queryItems["genres"] = validatedGenres.map(String.init).joined(separator: ",")
+        }
+        if let tags, !tags.isEmpty {
+            let validatedTags = try InputValidator.validateIDArray(tags)
+            queryItems["tags"] = validatedTags.map(String.init).joined(separator: ",")
+        }
+
+        if let developers, !developers.isEmpty {
+            queryItems["developers"] = try InputValidator.validateCommaSeparatedValues(developers)
+        }
+        if let publishers, !publishers.isEmpty {
+            queryItems["publishers"] = try InputValidator.validateCommaSeparatedValues(publishers)
+        }
+
+        if let stores, !stores.isEmpty {
+            let validatedStores = try InputValidator.validateIDArray(stores)
+            queryItems["stores"] = validatedStores.map(String.init).joined(separator: ",")
+        }
+        if let creators, !creators.isEmpty {
+            queryItems["creators"] = try InputValidator.validateCommaSeparatedValues(creators)
+        }
+
+        if let dates, !dates.isEmpty {
+            let dateComponents = dates.split(separator: ",").map(String.init)
+            for dateComponent in dateComponents {
+                _ = try InputValidator.validateDateString(dateComponent)
+            }
+            queryItems["dates"] = dates
+        }
+        if let updated, !updated.isEmpty {
+            let dateComponents = updated.split(separator: ",").map(String.init)
+            for dateComponent in dateComponents {
+                _ = try InputValidator.validateDateString(dateComponent)
+            }
+            queryItems["updated"] = updated
+        }
+
+        if let metacritic, !metacritic.isEmpty {
+            let scoreComponents = metacritic.split(separator: ",").map(String.init)
+            for scoreComponent in scoreComponents {
+                if let score = Int(scoreComponent) {
+                    _ = try InputValidator.validateMetacriticScore(score)
+                } else {
+                    throw NetworkError.apiError("Invalid Metacritic score format")
+                }
+            }
+            queryItems["metacritic"] = metacritic
+        }
+        if let excludeAdditions { queryItems["exclude_additions"] = String(excludeAdditions) }
+        if let excludeParents { queryItems["exclude_parents"] = String(excludeParents) }
+        if let excludeGameSeries { queryItems["exclude_game_series"] = String(excludeGameSeries) }
+
+        return queryItems
     }
 }
