@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All tests must pass on macOS
   - Code coverage must be successfully generated
   - Consolidated quality gate job validates all checks
+- Comprehensive DocC documentation catalog
+  - Main landing page with topics organization
+  - Getting Started guide with installation and basic usage
+  - SwiftUI Integration guide with ViewModels and components
+  - Advanced Features guide covering query builder and pagination
+  - Security guide for API keys, certificate pinning, and TLS enforcement
+  - Performance guide with optimization techniques and best practices
 
 ### Fixed
 - iOS 15 compatibility in tests by using `Task.sleep(nanoseconds:)` instead of `Task.sleep(for:)`
