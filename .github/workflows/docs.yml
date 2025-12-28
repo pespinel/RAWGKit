@@ -43,10 +43,12 @@ jobs:
             {} +
 
           # Fix paths in JSON data files
-          find ./docs -name "*.json" -type f -exec sed -i '' \
-            -e 's|"\\/documentation\\/|"\\/RAWGKit\\/documentation\\/|g' \
-            -e 's|"\\/tutorials\\/|"\\/RAWGKit\\/tutorials\\/|g' \
-            {} +
+          find ./docs -name "*.json" -type f | while read -r file; do
+            sed -i '' \
+              -e 's|"\\/documentation\\/|"\\/RAWGKit\\/documentation\\/|g' \
+              -e 's|"\\/tutorials\\/|"\\/RAWGKit\\/tutorials\\/|g' \
+              "$file"
+          done
 
           echo "Documentation generated for GitHub Pages at /RAWGKit/"
 
