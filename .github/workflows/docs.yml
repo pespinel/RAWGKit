@@ -35,17 +35,12 @@ jobs:
             --output-path ./docs
 
           # Fix paths for GitHub Pages subdirectory hosting
-          # Convert absolute paths in HTML files
+          # Convert absolute paths in HTML files only
           find ./docs -name "*.html" -type f -exec sed -i '' \
             -e 's|href="/|href="/RAWGKit/|g' \
             -e 's|src="/|src="/RAWGKit/|g' \
             -e 's|var baseUrl = "/"|var baseUrl = "/RAWGKit/"|g' \
             {} +
-
-          # Fix paths in JSON data files using perl (handles long filenames better)
-          find ./docs -name "*.json" -type f | while read -r file; do
-            perl -i -pe 's|"\\/documentation\\/|"\\/RAWGKit\\/data\\/documentation\\/|g; s|"\\/tutorials\\/|"\\/RAWGKit\\/data\\/tutorials\\/|g' "$file"
-          done
 
           echo "Documentation generated for GitHub Pages at /RAWGKit/"
 
