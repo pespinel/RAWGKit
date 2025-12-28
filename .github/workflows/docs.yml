@@ -42,12 +42,9 @@ jobs:
             -e 's|var baseUrl = "/"|var baseUrl = "/RAWGKit/"|g' \
             {} +
 
-          # Fix paths in JSON data files
+          # Fix paths in JSON data files using perl (handles long filenames better)
           find ./docs -name "*.json" -type f | while read -r file; do
-            sed -i '' \
-              -e 's|"\\/documentation\\/|"\\/RAWGKit\\/documentation\\/|g' \
-              -e 's|"\\/tutorials\\/|"\\/RAWGKit\\/tutorials\\/|g' \
-              "$file"
+            perl -i -pe 's|"\\/documentation\\/|"\\/RAWGKit\\/documentation\\/|g; s|"\\/tutorials\\/|"\\/RAWGKit\\/tutorials\\/|g' "$file"
           done
 
           echo "Documentation generated for GitHub Pages at /RAWGKit/"
