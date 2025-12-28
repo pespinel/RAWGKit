@@ -1,9 +1,10 @@
 # RAWGKit
 
 [![CI](https://github.com/pespinel/RAWGKit/actions/workflows/ci.yml/badge.svg)](https://github.com/pespinel/RAWGKit/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/pespinel/RAWGKit/branch/main/graph/badge.svg)](https://codecov.io/gh/pespinel/RAWGKit)
 [![Swift Version](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS-blue.svg)](https://developer.apple.com)
-[![Tests](https://img.shields.io/badge/Tests-254%20passing-brightgreen.svg)](https://github.com/pespinel/RAWGKit/actions)
+[![Tests](https://img.shields.io/badge/Tests-389%20passing-brightgreen.svg)](https://github.com/pespinel/RAWGKit/actions)
 [![SPM Compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
