@@ -32,17 +32,18 @@ jobs:
           # Convert to static site
           xcrun docc process-archive transform-for-static-hosting \
             "$DOCC_ARCHIVE" \
-            --output-path ./docs
+            --output-path ./docs \
+            --hosting-base-path RAWGKit
 
           # Fix paths for GitHub Pages subdirectory hosting
-          # Convert absolute paths to relative paths
+          # Convert absolute paths to include repository name
           find ./docs -name "*.html" -type f -exec sed -i '' \
-            -e 's|href="/|href="./|g' \
-            -e 's|src="/|src="./|g' \
-            -e 's|var baseUrl = "/"|var baseUrl = "./"|g' \
+            -e 's|href="/|href="/RAWGKit/|g' \
+            -e 's|src="/|src="/RAWGKit/|g' \
+            -e 's|var baseUrl = "/"|var baseUrl = "/RAWGKit/"|g' \
             {} +
 
-          echo "Documentation generated with relative paths"
+          echo "Documentation generated for GitHub Pages at /RAWGKit/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

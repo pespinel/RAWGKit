@@ -30,9 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Deployed to gh-pages branch on every push to main
   - Static hosting at https://pespinel.github.io/RAWGKit/
   - Uses peaceiris/actions-gh-pages for clean deployment
+  - Proper path handling for subdirectory hosting with /RAWGKit/ base path
 
 ### Fixed
 - iOS 15 compatibility in tests by using `Task.sleep(nanoseconds:)` instead of `Task.sleep(for:)`
+- DocC documentation paths for GitHub Pages subdirectory hosting
 
 ## [3.2]
 
