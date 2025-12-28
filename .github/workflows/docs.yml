@@ -44,7 +44,7 @@ jobs:
 
           # Fix paths in JSON data files using perl (handles long filenames better)
           find ./docs -name "*.json" -type f | while read -r file; do
-            perl -i -pe 's|"\\/documentation\\/|"\\/RAWGKit\\/documentation\\/|g; s|"\\/tutorials\\/|"\\/RAWGKit\\/tutorials\\/|g' "$file"
+            perl -i -pe 's|"\\/documentation\\/|"\\/RAWGKit\\/data\\/documentation\\/|g; s|"\\/tutorials\\/|"\\/RAWGKit\\/data\\/tutorials\\/|g' "$file"
           done
 
           echo "Documentation generated for GitHub Pages at /RAWGKit/"
