@@ -35,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automated tests on iOS, macOS, watchOS, tvOS, and visionOS simulators
   - Platform-specific caching for faster builds
   - Ensures SDK compatibility across all supported Apple platforms
+- Quality gates for code standards enforcement
+  - All PRs must pass SwiftLint strict mode
+  - All PRs must pass SwiftFormat validation
+  - All tests must pass on all platforms
+  - Code coverage must be successfully generated
+  - Consolidated quality gate job validates all checks
 
 ### Changed
 - `CacheManager` refactored to pure actor architecture

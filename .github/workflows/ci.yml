@@ -159,3 +159,33 @@ jobs:
           files: ./coverage.lcov
           fail_ci_if_error: true
           verbose: true
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: macos-15
+    needs: [lint, format, test, test-platforms, coverage]
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ]; then
+            echo "❌ SwiftLint check failed"
+            exit 1
+          fi
+          if [ "${{ needs.format.result }}" != "success" ]; then
+            echo "❌ SwiftFormat check failed"
+            exit 1
+          fi
+          if [ "${{ needs.test.result }}" != "success" ]; then
+            echo "❌ Tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.test-platforms.result }}" != "success" ]; then
+            echo "❌ Platform tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.coverage.result }}" != "success" ]; then
+            echo "❌ Coverage generation failed"
+            exit 1
+          fi
+          echo "✅ All quality checks passed"
