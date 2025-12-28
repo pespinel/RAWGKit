@@ -42,6 +42,9 @@ jobs:
             -e 's|var baseUrl = "/"|var baseUrl = "/RAWGKit/"|g' \
             {} +
 
+          # Add redirect from root to documentation
+          echo '<script>window.location.href = "/RAWGKit/documentation/rawgkit"</script>' > ./docs/index.html
+
           echo "Documentation generated for GitHub Pages at /RAWGKit/"
 
       - name: Deploy to GitHub Pages
