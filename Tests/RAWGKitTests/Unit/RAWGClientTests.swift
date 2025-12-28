@@ -2,55 +2,6 @@ import Foundation
 @testable import RAWGKit
 import Testing
 
-// MARK: - Mock NetworkManager para tests
-
-actor MockNetworkManager {
-    var lastURL: URL?
-    var lastUseCache: Bool = true
-    var shouldThrowError: NetworkError?
-    var mockResponse: (any Decodable)?
-
-    func reset() {
-        lastURL = nil
-        lastUseCache = true
-        shouldThrowError = nil
-        mockResponse = nil
-    }
-
-    func buildURL(baseURL: String, path: String, queryItems: [String: String]) throws -> URL {
-        var components = URLComponents(string: baseURL)
-        components?.path = path
-        components?.queryItems = queryItems.map { URLQueryItem(name: $0.key, value: $0.value) }
-
-        guard let url = components?.url else {
-            throw NetworkError.invalidURL
-        }
-
-        return url
-    }
-
-    func fetch<T: Decodable>(from url: URL, as _: T.Type, useCache: Bool = true) async throws -> T {
-        lastURL = url
-        lastUseCache = useCache
-
-        if let error = shouldThrowError {
-            throw error
-        }
-
-        if let response = mockResponse as? T {
-            return response
-        }
-
-        throw NetworkError.serverError(500)
-    }
-
-    func clearCache() {}
-
-    func cacheStats() -> CacheStats {
-        CacheStats(totalEntries: 0, validEntries: 0, expiredEntries: 0)
-    }
-}
-
 /// Tests suite for RAWGClient
 ///
 /// Covers: initialization, API key usage, cache control, URL building,
