@@ -6,16 +6,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: macos-15
     steps:
       - name: Checkout
@@ -33,24 +27,19 @@ jobs:
           # Find the .doccarchive
           DOCC_ARCHIVE=$(find /tmp/docbuild -name "*.doccarchive" | head -1)
 
+          echo "Found archive: $DOCC_ARCHIVE"
+
           # Convert to static site
           xcrun docc process-archive transform-for-static-hosting \
             "$DOCC_ARCHIVE" \
-            --output-path ./docs \
-            --hosting-base-path RAWGKit
+            --output-path ./docs
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./docs
+          echo "Documentation generated successfully"
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          force_orphan: true

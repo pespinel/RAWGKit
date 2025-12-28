@@ -27,8 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Performance guide with optimization techniques and best practices
 - GitHub Pages documentation hosting
   - Automatic documentation generation using xcodebuild docbuild
+  - Deployed to gh-pages branch on every push to main
   - Static hosting at https://pespinel.github.io/RAWGKit/
-  - No package dependencies required
+  - Uses peaceiris/actions-gh-pages for clean deployment
 
 ### Fixed
 - iOS 15 compatibility in tests by using `Task.sleep(nanoseconds:)` instead of `Task.sleep(for:)`
