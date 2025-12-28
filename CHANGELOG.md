@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1]
+
 ### Added
+- Secure Keychain storage for API keys
+  - `KeychainManager` actor for thread-safe secure storage
+  - iOS Keychain integration for encrypted API key storage
+  - `RAWGClient.initWithKeychain()` for Keychain-based initialization
+  - `RAWGClient.saveAPIKeyToKeychain()` and `RAWGClient.deleteAPIKeyFromKeychain()` convenience methods
+  - Comprehensive error handling with `KeychainError` enum
+  - 14 unit tests for Keychain operations (save, load, delete, error handling, concurrency)
+- Comprehensive input validation system
+  - `InputValidator` utility with 9 validation methods
+  - Protection against injection attacks, parameter pollution, and malformed requests
+  - Validation for search queries, page numbers, resource IDs, slugs, dates, and more
+  - 66 unit tests covering all validation scenarios and edge cases
+  - Integration with 35+ RAWGClient API methods
+- Codecov integration for code coverage tracking
+  - Automatic coverage report uploads to Codecov
+  - Coverage badges available for README
+  - Coverage trending and PR comments
 - 5 performance benchmark tests validating SDK performance
   - Cache operations < 5ms
   - Memory cache efficiency with 100 entries < 1ms average
@@ -16,13 +35,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Cache statistics calculation < 10ms
 
 ### Changed
-- Updated README with Swift 6.0+ badge and requirements
-- Enhanced README with prominent SwiftUI integration section
-- Added 259 passing tests badge to README
-- Replaced Discussions link with Feature Requests in README
+- CI workflow improvements
+  - Added dependency caching for Swift packages (40-60% faster builds)
+  - Cached `.build` directory and Swift package manager cache
+  - Cache key based on `Package.resolved` hash
+- Updated README
+  - Added Codecov badge
+  - Updated test count from 254 to 389 passing tests
+  - Swift 6.0+ badge and requirements
+  - Enhanced SwiftUI integration section
+  - Replaced Discussions link with Feature Requests
+
+### Security
+- API keys now stored securely in iOS Keychain instead of plaintext
+- Sanitized production logging to prevent sensitive data exposure
+  - Detailed request/response logging only in DEBUG builds
+  - Production logs show generic messages only
+  - Resolves CWE-532 (Information Exposure Through Log Files)
+- Input validation prevents injection attacks and parameter pollution
+  - Resolves CWE-20 (Improper Input Validation)
+  - XSS prevention in search queries
+  - SQL injection protection in parameters
 
 ### Fixed
 - Swift Testing warnings by using `Bool(true)` in completion tests for `clearCache()` and `cancelAllRequests()`
+- Race conditions in Keychain tests with serialized test execution
 
 ## [3.0]
 
