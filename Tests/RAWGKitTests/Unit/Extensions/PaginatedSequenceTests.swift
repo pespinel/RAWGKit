@@ -258,7 +258,7 @@ struct PaginatedSequenceTests {
         }
 
         // Cancel after a short delay
-        try await Task.sleep(for: .milliseconds(100))
+        try await Task.sleep(nanoseconds: 100_000_000) // 100ms
         task.cancel()
 
         // Should not throw error on cancellation
