@@ -34,7 +34,15 @@ jobs:
             "$DOCC_ARCHIVE" \
             --output-path ./docs
 
-          echo "Documentation generated successfully"
+          # Fix paths for GitHub Pages subdirectory hosting
+          # Convert absolute paths to relative paths
+          find ./docs -name "*.html" -type f -exec sed -i '' \
+            -e 's|href="/|href="./|g' \
+            -e 's|src="/|src="./|g' \
+            -e 's|var baseUrl = "/"|var baseUrl = "./"|g' \
+            {} +
+
+          echo "Documentation generated with relative paths"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
